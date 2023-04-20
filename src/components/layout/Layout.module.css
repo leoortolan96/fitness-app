@@ -1,0 +1,9 @@
+.mainList {
+    margin: 120px auto;
+    width: 90%;
+    max-width: 40rem;
+  }
+
+  .mainGrid {
+    margin: 120px 50px;
+  }

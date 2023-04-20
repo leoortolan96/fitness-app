@@ -1,0 +1,30 @@
+.top {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.top button {
+  background-color: gray;
+  color: whitesmoke;
+  font-size: 0.9rem;
+  margin: 0 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 0px;
+}
+
+.snackbar {
+  margin: 0;
+  padding: 0 10px;
+  list-style: none;
+}
+
+.snackbar h3,
+.snackbar p {
+  margin: 0;
+  padding: 0;
+}
