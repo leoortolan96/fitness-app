@@ -1,9 +1,17 @@
-.mainList {
-    margin: 120px auto;
-    width: 90%;
-    max-width: 40rem;
-  }
+@import "/src/shared/colors.css";
 
-  .mainGrid {
-    margin: 120px 50px;
-  }
+.navigation {
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  margin-top: 60px;
+  width: 100%;
+  max-width: 40rem;
+  background-color: var(--light);
+}
+
+/* .mainGrid {
+  margin-top: 60px;
+} */

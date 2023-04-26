@@ -1,30 +1,20 @@
-import { useContext } from "react";
-import { Link } from "react-router-dom";
-import FavoritesContext from "../../store/favorites-context";
-
-import  classes from "./MainNavigation.module.css";
+import { useNavigate } from "react-router-dom";
+import classes from "./MainNavigation.module.css";
+import { FaArrowLeft, FaCrosshairs } from "react-icons/fa";
 
 function MainNavigation() {
-const favoritesCtx = useContext(FavoritesContext);
-
-    return <header className={classes.header}>
-        <div className={classes.logo}>React Meetups</div>
-        <nav>
-            <ul>
-                <li>
-                    <Link to='/'>All Meetups</Link>
-                </li>
-                <li>
-                    <Link to='/new-meetup'>New Meetup</Link>
-                </li>
-                <li>
-                    <Link to='/favorites'>Favorites
-                    <span className={classes.badge}>{favoritesCtx.totalFavorites}</span>
-                    </Link>
-                </li>
-            </ul>
-        </nav>
+  const navigate = useNavigate();
+  return (
+    <header className={classes.header}>
+      <button onClick={() => navigate(-1)}>
+        <FaArrowLeft size={20} />
+      </button>
+      <h1>TITLE</h1>
+      <button onClick={() => console.log("action")}>
+        <FaCrosshairs size={20} />
+      </button>
     </header>
+  );
 }
 
 export default MainNavigation;
