@@ -2,7 +2,6 @@ import WorkoutItem from "./WorkoutItem";
 import classes from "./WorkoutsList.module.css";
 
 export default function WorkoutsList(props) {
-    console.log(props);
   var activeWorkouts = props.workouts
     .filter((workout) => workout.is_active)
     .sort((w1, w2) => (w1.name > w2.name ? 1 : w1.name < w2.name ? -1 : 0));

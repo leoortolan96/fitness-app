@@ -1,6 +1,7 @@
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import AppBar from "../components/layout/AppBar";
 import WorkoutDetails from "../components/workouts/WorkoutDetails";
 import classes from "./WorkoutDetailsPage.module.css";
 
@@ -75,15 +76,13 @@ function WorkoutDetailsPage() {
   const [loadedWorkout, setLoadedWorkout] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
-  const {id} = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
-        const response = await fetch(
-          "http://localhost:5000/workout/" + id
-        );
+        const response = await fetch("http://localhost:5000/workout/" + id);
         if (!response.ok) {
           throw Error("Failed to fetch resource");
         }
@@ -113,26 +112,23 @@ function WorkoutDetailsPage() {
     // eslint-disable-next-line
   }, []);
 
-  if (isLoading) {
-    return (
-      <section>
-        <p>Loading...</p>
-      </section>
-    );
-  }
-
-  if (errorMessage) {
-    return (
-      <section>
-        <p>{errorMessage}</p>
-      </section>
-    );
-  }
-
   return (
-    <section>
-      <WorkoutDetails workout={loadedWorkout} />
-    </section>
+    <div>
+      <AppBar title={loadedWorkout.name} showBackButton={true} />
+      {isLoading ? (
+        <section>
+          <p>Loading...</p>
+        </section>
+      ) : errorMessage ? (
+        <section>
+          <p>{errorMessage}</p>
+        </section>
+      ) : (
+        <section>
+          <WorkoutDetails workout={loadedWorkout} />
+        </section>
+      )}
+    </div>
   );
 }
 export default WorkoutDetailsPage;

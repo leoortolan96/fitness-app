@@ -1,5 +1,7 @@
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
+import AppBar from "../components/layout/AppBar";
+import BottomNavBar from "../components/layout/BottomNavBar";
 import WorkoutsList from "../components/workouts/WorkoutsList";
 import classes from "./MyWorkouts.module.css";
 
@@ -72,7 +74,7 @@ import classes from "./MyWorkouts.module.css";
 
 function MyWorkoutsPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [loadedMWorkouts, setLoadedWorkouts] = useState([]);
+  const [loadedWorkouts, setLoadedWorkouts] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -112,7 +114,7 @@ function MyWorkoutsPage() {
           throw Error("Failed to fetch resource");
         }
         const data = await response.json();
-        var workouts = [];        
+        var workouts = [];
         for (const key in data["workouts"]) {
           const workout = {
             id: data["workouts"][key]["_id"],
@@ -145,26 +147,24 @@ function MyWorkoutsPage() {
     // eslint-disable-next-line
   }, []);
 
-  if (isLoading) {
-    return (
-      <section>
-        <p>Loading...</p>
-      </section>
-    );
-  }
-
-  if (errorMessage) {
-    return (
-      <section>
-        <p>{errorMessage}</p>
-      </section>
-    );
-  }
-
   return (
-    <section>
-      <WorkoutsList workouts={loadedMWorkouts} />
-    </section>
+    <div>
+      <AppBar title="MEUS TREINOS" showBackButton={false} />
+      {isLoading ? (
+        <section>
+          <p>Loading...</p>
+        </section>
+      ) : errorMessage ? (
+        <section>
+          <p>{errorMessage}</p>
+        </section>
+      ) : (
+        <section>
+          <WorkoutsList workouts={loadedWorkouts} />
+        </section>
+      )}
+      <BottomNavBar />
+    </div>
   );
 }
 export default MyWorkoutsPage;

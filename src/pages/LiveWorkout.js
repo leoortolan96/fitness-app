@@ -1,5 +1,7 @@
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
+import AppBar from "../components/layout/AppBar";
+import BottomNavBar from "../components/layout/BottomNavBar";
 import WorkoutDetails from "../components/workouts/WorkoutDetails";
 import classes from "./LiveWorkout.module.css";
 
@@ -108,36 +110,33 @@ function LiveWorkoutPage() {
     // eslint-disable-next-line
   }, []);
 
-  if (isLoading) {
-    return (
-      <section>
-        <p>Loading...</p>
-      </section>
-    );
-  }
-
-  if (errorMessage) {
-    return (
-      <section>
-        <p>{errorMessage}</p>
-      </section>
-    );
-  }
-
-  if (!loadedWorkout) {
-    return (
-      <section>
-        <p>Nenhum treino em andamento </p>
-        <p> </p>
-        <p>Inicie um treino para que ele seja mostrado aqui </p>
-      </section>
-    );
-  }
-
   return (
-    <section>
-      <WorkoutDetails workout={loadedWorkout} />
-    </section>
+    <div>
+      <AppBar
+        title={loadedWorkout ? loadedWorkout.name : "EM ANDAMENTO"}
+        showBackButton={false}
+      />
+      {isLoading ? (
+        <section>
+          <p>Loading...</p>
+        </section>
+      ) : errorMessage ? (
+        <section>
+          <p>{errorMessage}</p>
+        </section>
+      ) : !loadedWorkout ? (
+        <section>
+          <p>Nenhum treino em andamento </p>
+          <p> </p>
+          <p>Inicie um treino para que ele seja mostrado aqui </p>
+        </section>
+      ) : (
+        <section>
+          <WorkoutDetails workout={loadedWorkout} />
+        </section>
+      )}
+      <BottomNavBar />
+    </div>
   );
 }
 export default LiveWorkoutPage;

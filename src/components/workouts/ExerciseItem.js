@@ -1,7 +1,6 @@
 import classes from "./ExerciseItem.module.css";
 
 export default function ExerciseItem(props) {
-  console.log("item:\n" + props.exercise.name);
   return (
     <li className={classes.item}>
       <div className={classes.content}>

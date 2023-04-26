@@ -1,13 +1,12 @@
-import BottomNavBar from "./BottomNavBar";
 import classes from "./Layout.module.css";
-import MainNavigation from "./MainNavigation";
 
 export default function Layout(props) {
-  return (
-    <div className={classes.navigation}>
-      <MainNavigation />
-      <main className={classes.main}>{props.children}</main>
-      <BottomNavBar />
-    </div>
-  );
+  return <main className={classes.main}>{props.children}</main>;
+  // return (
+  //   <div className={classes.navigation}>
+  //     <AppBar />
+  //     <main className={classes.main}>{props.children}</main>
+  //     <BottomNavBar />
+  //   </div>
+  // );
 }
