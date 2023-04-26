@@ -12,7 +12,7 @@ function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<MyWorkoutsPage />} />
-        <Route path="/workout-details" element={<WorkoutDetailsPage />} />
+        <Route path="/workout/:id" element={<WorkoutDetailsPage />} />
         <Route path="/live-workout" element={<LiveWorkoutPage />} />
         <Route path="/meetups" element={<AllMeetupsPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
