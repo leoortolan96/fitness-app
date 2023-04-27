@@ -63,4 +63,41 @@ app.get("/live-workout", async (req, resp) => {
   }
 });
 
+app.post("/start-cancel-workout", async (req, resp) => {
+  try {
+    await Workout.findByIdAndUpdate(req.body.id, { is_live: req.body.is_live });
+    resp.json({ id: req.body.id });
+  } catch (error) {
+    resp.json({ status: 500, message: "Error updating workout!"});
+  }
+});
+
+app.post("/finalize-workout", async (req, resp) => {
+  try {
+    let workout = await Workout.findById(req.body.id);
+    workout.is_live = false;
+    workout.workout_sessions.push({
+      session_datetime: req.body.start_time,
+      session_duration: req.body.duration,
+    });
+    workout.exercises.forEach((exercise) => {
+      req.body.altered_loads.forEach((alteredLoad) => {
+        if (exercise.id === alteredLoad.exerciseId)
+          exercise.load = alteredLoad.load;
+      });
+      if (!exercise.is_paused) {
+        exercise.sessions.push({
+          session_datetime: req.body.start_time,
+          session_load: exercise.load,
+        });
+      }
+    });
+    // console.log(JSON.stringify(workout));
+    await workout.save();
+    resp.json({ id: req.body.id });
+  } catch (error) {
+    resp.json({ status: 500, message: "Error finalizing workout!"});
+  }
+});
+
 app.listen(5000);

@@ -1,0 +1,11 @@
+.snackbar {
+    margin: 0;
+    padding: 0 10px;
+    list-style: none;
+  }
+  
+  .snackbar h3,
+  .snackbar p {
+    margin: 0;
+    padding: 0;
+  }
