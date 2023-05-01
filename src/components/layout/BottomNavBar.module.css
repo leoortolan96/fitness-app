@@ -1,0 +1,39 @@
+@import "/src/shared/colors.css";
+
+.footer {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: var(--light);
+  margin: 0;
+  padding: 0;
+  /* left: 0;
+  right: 0; */
+  bottom: 0;
+  position: fixed;
+  border-top: 1px solid var(--neutralUltralight);
+}
+
+.footer button {
+  color: var(--neutralMedium);
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  margin: 0 5px;
+  flex-grow: 1;
+}
+
+.navItem {
+  color: var(--neutralMedium);
+}
+
+.selectedNavItem {
+  color: var(--icons);
+}
+
+.footer p {
+  margin: 0;
+  font-size: 12px;
+}

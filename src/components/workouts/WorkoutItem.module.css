@@ -1,0 +1,13 @@
+.item {
+  margin: 1rem 0;
+}
+
+.content {
+  text-align: left;
+  padding: 1rem;
+}
+
+.content h3 {
+  font-size: 1.25rem;
+  color: #2c292b;
+}
