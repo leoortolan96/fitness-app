@@ -109,7 +109,9 @@ function MyWorkoutsPage() {
     async function fetchData() {
       try {
         setIsLoading(true);
-        const response = await fetch("http://localhost:5000/workouts");
+        const response = await fetch(
+          process.env.REACT_APP_API_ENDPOINT + "/workouts"
+        );
         if (!response.ok) {
           throw Error("Failed to fetch resource");
         }

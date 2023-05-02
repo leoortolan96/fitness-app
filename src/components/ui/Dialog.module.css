@@ -1,0 +1,53 @@
+@import "/src/shared/colors.css";
+
+.overlay {
+  position: fixed; /* Sit on top of the page content */
+  display: block; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+.dialog {
+  width: 500px;
+  max-width: 90%;
+  margin: 0px;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  background-color: var(--light);
+  padding: 0px;
+  border-radius: 15px;
+  /* display: flex; */
+  /* flex-direction: "column"; */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  /* pointer-events: none; */
+}
+
+.header {
+  color: var(--secondary);
+  border-bottom: 1px solid var(--neutralUltralight);
+  padding: 10px 15px;
+  /* width: 100%; */
+}
+
+.header h2 {
+  margin: 0px;
+  color: var(--secondary);
+}
+
+.header button {
+  color: var(--secondary);
+  background-color: transparent;
+  border: none;
+  padding: 6px;
+  margin: 0 5px;
+}

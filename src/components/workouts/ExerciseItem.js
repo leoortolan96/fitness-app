@@ -2,7 +2,7 @@ import classes from "./ExerciseItem.module.css";
 
 export default function ExerciseItem(props) {
   return (
-    <li className={classes.item}>
+    <li className={classes.item} onClick={props.onClick}>
       <div className={classes.content}>
         <div style={{ display: "flex" }}>
           <p style={{ flexGrow: "1" }}>{props.exercise.name}</p>
