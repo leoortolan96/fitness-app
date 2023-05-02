@@ -68,7 +68,7 @@ app.post("/start-cancel-workout", async (req, resp) => {
     await Workout.findByIdAndUpdate(req.body.id, { is_live: req.body.is_live });
     resp.json({ id: req.body.id });
   } catch (error) {
-    resp.json({ status: 500, message: "Error updating workout!"});
+    resp.json({ status: 500, message: "Error updating workout!" });
   }
 });
 
@@ -82,8 +82,9 @@ app.post("/finalize-workout", async (req, resp) => {
     });
     workout.exercises.forEach((exercise) => {
       req.body.altered_loads.forEach((alteredLoad) => {
-        if (exercise.id === alteredLoad.exerciseId)
-          exercise.load = alteredLoad.load;
+        if (exercise._id == alteredLoad.exercise_id) {
+          exercise.load = alteredLoad.new_load;
+        }
       });
       if (!exercise.is_paused) {
         exercise.sessions.push({
@@ -96,7 +97,7 @@ app.post("/finalize-workout", async (req, resp) => {
     await workout.save();
     resp.json({ id: req.body.id });
   } catch (error) {
-    resp.json({ status: 500, message: "Error finalizing workout!"});
+    resp.json({ status: 500, message: "Error finalizing workout!" });
   }
 });
 

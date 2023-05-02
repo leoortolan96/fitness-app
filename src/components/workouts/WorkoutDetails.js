@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import ExerciseItem from "./ExerciseItem";
 import classes from "./WorkoutDetails.module.css";
 import { FaRegWindowClose } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function WorkoutDetails(props) {
   const [isLive, setIsLive] = useState(props.workout.is_live);
@@ -11,7 +12,9 @@ export default function WorkoutDetails(props) {
   const [isCancelButtonLoading, setIsCancelButtonLoading] = useState(false);
   const [isLoadDialogOpen, setIsLoadDialogOpen] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState(null);
+  const [alteredLoads, setAlteredLoads] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   async function startCancelWorkout(isStarting) {
     try {
@@ -38,14 +41,13 @@ export default function WorkoutDetails(props) {
           "live_workout_initial",
           JSON.stringify(props.workout)
         );
-        // localStorage.setItem("live_workout_start", JSON.stringify(new Date()));
         localStorage.setItem("live_workout_start", new Date());
-        localStorage.removeItem("altered_loads");
       } else {
         localStorage.removeItem("live_workout_initial");
         localStorage.removeItem("live_workout_start");
-        localStorage.removeItem("altered_loads");
       }
+      localStorage.removeItem("altered_loads");
+      setAlteredLoads([]);
       // console.log(
       //   "initial time:\n" + localStorage.getItem("live_workout_start")
       // );
@@ -102,8 +104,12 @@ export default function WorkoutDetails(props) {
       localStorage.removeItem("live_workout_initial");
       localStorage.removeItem("live_workout_start");
       localStorage.removeItem("altered_loads");
+      setAlteredLoads([]);
       // console.log("initial:\n" + localStorage.getItem("live_workout_initial"));
       // console.log("current:\n" + localStorage.getItem("altered_loads"));
+      const path = window.location.pathname;
+      if (path === "/live-workout") navigate("/");
+      else if (path.startsWith("/workout/")) navigate(-1);
     } catch (error) {
       console.log(error);
       enqueueSnackbar(
@@ -133,23 +139,20 @@ export default function WorkoutDetails(props) {
     function submitHandler(event) {
       event.preventDefault();
       const enteredLoad = loadInputRef.current.value;
-      console.log("new load: " + enteredLoad);
-      console.log("1");
-      let alteredLoads = JSON.parse(
+      let alteredLoadsArray = JSON.parse(
         localStorage.getItem("altered_loads") ?? "[]"
       );
-      console.log("2");
-      alteredLoads = alteredLoads.filter(
+      alteredLoadsArray = alteredLoadsArray.filter(
         (alteredLoad) => alteredLoad.exercise_id !== selectedExercise._id
       );
-      console.log("3");
-      alteredLoads.push({
+      alteredLoadsArray.push({
         exercise_id: selectedExercise._id,
         new_load: enteredLoad,
       });
-      console.log("4");
-      localStorage.setItem("altered_loads", JSON.stringify(alteredLoads));
-      console.log(JSON.parse(localStorage.getItem("altered_loads") ?? []));
+      localStorage.setItem("altered_loads", JSON.stringify(alteredLoadsArray));
+      setAlteredLoads(alteredLoadsArray);
+      // console.log(JSON.parse(localStorage.getItem("altered_loads") ?? []));
+      onClose();
     }
 
     return (
@@ -215,10 +218,11 @@ export default function WorkoutDetails(props) {
             key={exercise.id}
             exercise={exercise}
             onClick={() => {
+              if (!isLive) return;
               setSelectedExercise(exercise);
               setIsLoadDialogOpen(true);
-              console.log(selectedExercise.name);
             }}
+            alteredLoads={alteredLoads}
           />
         ))}
         {isLive ? (
