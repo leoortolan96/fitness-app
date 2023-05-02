@@ -1,7 +1,15 @@
+@import "/src/shared/colors.css";
+
 .item {
   align-items: left;
   background-color: var(--light);
   margin: 0 10px;
   padding: 10px;
   border-bottom: 1px solid var(--neutralUltralight);
+}
+
+.old_load {
+  color: var(--neutralLight);
+  margin-right: 15px;
+  text-decoration: line-through;
 }
