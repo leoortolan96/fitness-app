@@ -4,6 +4,8 @@ import AppBar from "../components/layout/AppBar";
 import BottomNavBar from "../components/layout/BottomNavBar";
 import WorkoutsList from "../components/workouts/WorkoutsList";
 import classes from "./MyWorkouts.module.css";
+import { FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 // const DUMMY_DATA = [
 //   {
@@ -77,6 +79,7 @@ function MyWorkoutsPage() {
   const [loadedWorkouts, setLoadedWorkouts] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // setIsLoading(true);
@@ -151,7 +154,12 @@ function MyWorkoutsPage() {
 
   return (
     <div>
-      <AppBar title="MEUS TREINOS" showBackButton={false} />
+      <AppBar
+        title="MEUS TREINOS"
+        showBackButton={false}
+        actionIcon={<FaPlus size={20} />}
+        action={() => navigate("/edit-workout/")}
+      />
       {isLoading ? (
         <section>
           <p>Loading...</p>

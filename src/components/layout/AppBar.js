@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import classes from "./AppBar.module.css";
-import { FaArrowLeft, FaCrosshairs } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 
 function AppBar(props) {
   const navigate = useNavigate();
@@ -13,10 +13,12 @@ function AppBar(props) {
       ) : (
         <div />
       )}
-      <h3>{props.title ?? ' '}</h3>
-      <button onClick={() => console.log("action")}>
-        <FaCrosshairs size={20} />
-      </button>
+      <h3>{props.title ?? " "}</h3>
+      {props.actionIcon ? (
+        <button onClick={() => props.action()}>{props.actionIcon}</button>
+      ) : (
+        <div />
+      )}
     </header>
   );
 }

@@ -1,9 +1,10 @@
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AppBar from "../components/layout/AppBar";
 import WorkoutDetails from "../components/workouts/WorkoutDetails";
 import classes from "./WorkoutDetailsPage.module.css";
+import { FaEdit } from "react-icons/fa";
 
 // const DUMMY_DATA =
 //   {
@@ -77,6 +78,7 @@ function WorkoutDetailsPage() {
   const [errorMessage, setErrorMessage] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -116,7 +118,23 @@ function WorkoutDetailsPage() {
 
   return (
     <div>
-      <AppBar title={loadedWorkout.name} showBackButton={true} />
+      <AppBar
+        title={loadedWorkout?.name}
+        showBackButton={true}
+        actionIcon={
+          loadedWorkout && !loadedWorkout.is_live ? <FaEdit size={20} /> : null
+        }
+        action={
+          loadedWorkout && !loadedWorkout.is_live
+            ? () => {
+                if (!loadedWorkout.is_live)
+                  navigate("/edit-workout/", {
+                    state: { originalWorkout: loadedWorkout },
+                  });
+              }
+            : null
+        }
+      />
       {isLoading ? (
         <section>
           <p>Loading...</p>
@@ -124,6 +142,10 @@ function WorkoutDetailsPage() {
       ) : errorMessage ? (
         <section>
           <p>{errorMessage}</p>
+        </section>
+      ) : !loadedWorkout ? (
+        <section>
+          <p>"Nenhum treino para mostrar..."</p>
         </section>
       ) : (
         <section>

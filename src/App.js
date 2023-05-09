@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "./components/layout/Layout";
+import AddEditWorkoutPage from "./pages/AddEditWorkout";
 import AllMeetupsPage from "./pages/AllMeetups";
 import FavoritesPage from "./pages/Favorites";
 import HistoryPage from "./pages/History";
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<MyWorkoutsPage />} />
         <Route path="/workout/:id" element={<WorkoutDetailsPage />} />
         <Route path="/live-workout" element={<LiveWorkoutPage />} />
+        <Route path="/edit-workout" element={<AddEditWorkoutPage />} />
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/meetups" element={<AllMeetupsPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
