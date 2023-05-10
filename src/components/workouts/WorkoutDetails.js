@@ -33,7 +33,7 @@ export default function WorkoutDetails(props) {
         }
       );
       result = await result.json();
-      if (result.status === 500) throw Error("Error finalizing workout!");
+      if (result.status === 500) throw result.message;
       props.workout.is_live = isStarting;
       setIsLive(isStarting);
       if (isStarting) {
@@ -54,18 +54,30 @@ export default function WorkoutDetails(props) {
       // console.log("initial:\n" + localStorage.getItem("live_workout_initial"));
       // console.log("current:\n" + localStorage.getItem("altered_loads"));
     } catch (error) {
-      console.log(error);
-      enqueueSnackbar(
-        <ul className={classes.snackbar}>
-          <li>
-            <h3>Error updating workout...</h3>
-          </li>
-          <li>
-            <p>Check your connection and try again...</p>
-          </li>
-        </ul>,
-        { variant: "error" }
-      );
+      if (error.includes("User already has live workout"))
+        enqueueSnackbar(
+          <ul className={classes.snackbar}>
+            <li>
+              <h3>Erro ao iniciar treino...</h3>
+            </li>
+            <li>
+              <p>Você já possui um treino em andamento...</p>
+            </li>
+          </ul>,
+          { variant: "warning" }
+        );
+      else
+        enqueueSnackbar(
+          <ul className={classes.snackbar}>
+            <li>
+              <h3>Error updating workout...</h3>
+            </li>
+            <li>
+              <p>Check your connection and try again...</p>
+            </li>
+          </ul>,
+          { variant: "error" }
+        );
     } finally {
       if (isStarting) setIsStartButtonLoading(false);
       else setIsCancelButtonLoading(false);
