@@ -127,15 +127,35 @@ app.post("/edit-workout", async (req, resp) => {
     workout.description = req.body.description;
     workout.is_active = req.body.is_active;
     let editedExercises = JSON.parse(req.body.exercises);
-
-    //TODO remover, adicionar, editar exercicios
-    workout.exercises.forEach((exercise) => {
-      editedExercises.forEach((editedExercise) => {
-        if (exercise._id == editedExercise._id) {
-          //TODO
-        }
+    //removes the exercises that have been removed by the user and
+    //updates the exercises that have been updated by the user
+    let index = 0;
+    while (index < workout.exercises.length) {
+      if (
+        editedExercises.some(
+          (editedExercise) => workout.exercises[index]._id == editedExercise._id
+        )
+      ) {
+        editedExercises.forEach((editedExercise) => {
+          if (workout.exercises[index]._id == editedExercise._id) {
+            workout.exercises[index].name = editedExercise.name;
+            workout.exercises[index].observation = editedExercise.observation;
+            workout.exercises[index].sets = editedExercise.sets;
+            workout.exercises[index].reps = editedExercise.reps;
+            workout.exercises[index].load = editedExercise.load;
+          }
+        });
+        index++;
+      } else {
+        workout.exercises.splice(index, 1);
+      }
+    }
+    //adds the exercises that have been added by the user
+    editedExercises
+      .filter((editedExercise) => editedExercise._id == null)
+      .forEach((addedExercise) => {
+        workout.exercises.push(addedExercise);
       });
-    });
     // console.log(JSON.stringify(workout));
     await workout.save();
     resp.json({ id: req.body.id });
@@ -146,9 +166,8 @@ app.post("/edit-workout", async (req, resp) => {
 
 app.post("/delete-workout", async (req, resp) => {
   try {
-    if (req.body.id == null)
-      throw Error("Error: Unexpected null value");
-    await Workout.deleteOne({_id: req.body.id});
+    if (req.body.id == null) throw Error("Error: Unexpected null value");
+    await Workout.deleteOne({ _id: req.body.id });
     resp.json({ id: req.body.id });
   } catch (error) {
     resp.json({ status: 500, message: "Error deleting workout!" });

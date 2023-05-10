@@ -1,11 +1,12 @@
 import { useSnackbar } from "notistack";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import classes from "./AddEditWorkout.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import AppBar from "../components/layout/AppBar";
 import { ExerciseItemEditMode } from "../components/workouts/ExerciseItem";
 import { useRef } from "react";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
+import EditWorkoutContext from "../store/edit-workout-context";
 
 function AddEditWorkoutPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState();
@@ -13,24 +14,31 @@ function AddEditWorkoutPage() {
   const navigate = useNavigate();
   const [isSaveButtonLoading, setIsSaveButtonLoading] = useState(false);
   const [isDeleteButtonLoading, setIsDeleteButtonLoading] = useState(false);
-
+  const editWorkoutCtx = useContext(EditWorkoutContext);
+  const location = useLocation();
   const nameInputRef = useRef();
   const descriptionInputRef = useRef();
-  const location = useLocation();
-  const originalWorkout = location?.state?.originalWorkout;
-  // console.log(JSON.stringify(originalWorkout));
-  const [editedWorkout, setEditedWorkout] = useState(
-    originalWorkout ?? { exercises: [] }
-  );
+
+  let originalWorkout = location?.state?.originalWorkout;
 
   async function saveWorkout(event) {
     try {
       event.preventDefault();
       setIsSaveButtonLoading(true);
       // await new Promise(resolve => setTimeout(resolve, 2000));
-      let enteredName = nameInputRef.current.value;
+      let enteredName = nameInputRef.current.value.trim();
       let enteredDescription = descriptionInputRef.current.value.trim();
       if (enteredDescription === "") enteredDescription = null;
+      let exercises = editWorkoutCtx.editedWorkout.exercises.map((exercise) => {
+        return {
+          _id: exercise._id,
+          name: exercise.name,
+          observation: exercise.observation,
+          sets: exercise.sets,
+          reps: exercise.reps,
+          load: exercise.load,
+        };
+      });
 
       let result = await fetch(
         process.env.REACT_APP_API_ENDPOINT +
@@ -42,7 +50,7 @@ function AddEditWorkoutPage() {
             name: enteredName.trim(),
             description: enteredDescription,
             is_active: true, //TODO implementar o switch
-            exercises: JSON.stringify(editedWorkout.exercises),
+            exercises: JSON.stringify(exercises),
           }),
           headers: {
             "Content-Type": "application/json",
@@ -119,68 +127,80 @@ function AddEditWorkoutPage() {
         title={originalWorkout ? "EDITAR TREINO" : "NOVO TREINO"}
         showBackButton={true}
       />
-      <div>
-        <ul className={classes.list}>
-          <li>EXERCICIO SETS REPS</li>
-          {editedWorkout.exercises.map((exercise) => (
-            <ExerciseItemEditMode
-              key={exercise._id}
-              exercise={exercise}
-              onClick={() => {
-                console.log("editar exercicio: " + exercise.name);
-              }}
-            />
-          ))}
+      {editWorkoutCtx.editedWorkout != null ? (
+        <div>
+          <ul className={classes.list}>
+            <li>EXERCICIO SETS REPS</li>
+            {editWorkoutCtx.editedWorkout.exercises.map((exercise, index) => (
+              <ExerciseItemEditMode
+                key={index}
+                exercise={exercise}
+                onClick={() =>
+                  navigate("/edit-exercise/", {
+                    state: { originalExercise: exercise, exerciseIndex: index },
+                  })
+                }
+              />
+            ))}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <button
+                className={classes.add_exercise}
+                onClick={() => navigate("/edit-exercise/")}
+              >
+                adicionar exercício
+              </button>
+            </div>
+          </ul>
+          <form
+            id="workout-form"
+            className={classes.form}
+            onSubmit={saveWorkout}
+          >
+            <div className={classes.control}>
+              <label htmlFor="name">NOME DO TREINO</label>
+              <input
+                type="text"
+                name="name"
+                required
+                id="name"
+                ref={nameInputRef}
+                placeholder="Ex: Treino A"
+                defaultValue={originalWorkout?.name}
+              />
+            </div>
+            <div className={classes.control}>
+              <label htmlFor="description">DESCRIÇÃO</label>
+              <input
+                type="text"
+                name="description"
+                id="description"
+                ref={descriptionInputRef}
+                placeholder="Ex: Peito, ombro e tríceps"
+                defaultValue={originalWorkout?.description}
+              />
+            </div>
+          </form>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <button
-              className={classes.add_exercise}
-              onClick={() => console.log("adicionar exercicio")}
-            >
-              adicionar exercício
+            <button className={classes.save} form="workout-form" type="submit">
+              {isSaveButtonLoading ? "..." : "salvar treino"}
             </button>
+            {originalWorkout ? (
+              <button
+                className={classes.delete}
+                onClick={() => setIsDeleteDialogOpen(true)}
+              >
+                {isDeleteButtonLoading ? "..." : "excluir treino"}
+              </button>
+            ) : (
+              <></>
+            )}
           </div>
-        </ul>
-        <form id="workout-form" className={classes.form} onSubmit={saveWorkout}>
-          <div className={classes.control}>
-            <label htmlFor="name">NOME DO TREINO</label>
-            <input
-              type="text"
-              name="name"
-              required
-              id="name"
-              ref={nameInputRef}
-              placeholder="Ex: Treino A"
-              defaultValue={originalWorkout?.name}
-            />
-          </div>
-          <div className={classes.control}>
-            <label htmlFor="description">DESCRIÇÃO</label>
-            <input
-              type="text"
-              name="description"
-              id="description"
-              ref={descriptionInputRef}
-              placeholder="Ex: Peito, ombro e tríceps"
-              defaultValue={originalWorkout?.description}
-            />
-          </div>
-        </form>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <button className={classes.save} form="workout-form" type="submit">
-            {isSaveButtonLoading ? "..." : "salvar treino"}
-          </button>
-          {originalWorkout ? (
-            <button
-              className={classes.delete}
-              onClick={() => setIsDeleteDialogOpen(true)}
-            >
-              {isDeleteButtonLoading ? "..." : "excluir treino"}
-            </button>
-          ) : (
-            <></>
-          )}
         </div>
-      </div>
+      ) : (
+        <section>
+          <p>Loading...</p>
+        </section>
+      )}
       <ConfirmDialog
         show={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}

@@ -1,5 +1,5 @@
 import { SnackbarProvider } from "notistack";
-import { FavoritesContextProvider } from "./favorites-context";
+import { EditWorkoutContextProvider } from "./edit-workout-context";
 import { LayoutContextProvider } from "./layout-context";
 import { NavigationContextProvider } from "./navigation-context";
 
@@ -8,7 +8,9 @@ export default function AppProvider(props) {
     <SnackbarProvider maxSnack={5}>
       <NavigationContextProvider>
         <LayoutContextProvider>
-          <FavoritesContextProvider>{props.children}</FavoritesContextProvider>
+          <EditWorkoutContextProvider>
+            {props.children}
+          </EditWorkoutContextProvider>
         </LayoutContextProvider>
       </NavigationContextProvider>
     </SnackbarProvider>

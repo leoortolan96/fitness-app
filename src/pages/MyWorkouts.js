@@ -1,11 +1,12 @@
 import { useSnackbar } from "notistack";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AppBar from "../components/layout/AppBar";
 import BottomNavBar from "../components/layout/BottomNavBar";
 import WorkoutsList from "../components/workouts/WorkoutsList";
 import classes from "./MyWorkouts.module.css";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import EditWorkoutContext from "../store/edit-workout-context";
 
 // const DUMMY_DATA = [
 //   {
@@ -80,6 +81,7 @@ function MyWorkoutsPage() {
   const [errorMessage, setErrorMessage] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const editWorkoutCtx = useContext(EditWorkoutContext);
 
   useEffect(() => {
     // setIsLoading(true);
@@ -158,7 +160,10 @@ function MyWorkoutsPage() {
         title="MEUS TREINOS"
         showBackButton={false}
         actionIcon={<FaPlus size={20} />}
-        action={() => navigate("/edit-workout/")}
+        action={() => {
+          editWorkoutCtx.setEditedWorkout({ exercises: [] });
+          navigate("/edit-workout/");
+        }}
       />
       {isLoading ? (
         <section>

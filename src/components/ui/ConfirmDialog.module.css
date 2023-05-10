@@ -53,7 +53,7 @@
 }
 
 .content {
-    margin: 15px;
+  margin: 15px;
 }
 
 .confirm {
@@ -67,11 +67,11 @@
 }
 
 .critical {
-    /* height: 90; */
-    padding: 40px 10px;
-    margin-top: 20px;
-    background-color: red;
-    color: var(--light);
-    border-radius: 6px;
-    border: none;
-  }
+  /* height: 90; */
+  padding: 40px 10px;
+  margin-top: 20px;
+  background-color: var(--primary);
+  color: var(--light);
+  border-radius: 6px;
+  border: none;
+}
