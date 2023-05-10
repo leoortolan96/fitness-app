@@ -1,6 +1,6 @@
 import { useSnackbar } from "notistack";
 import { useRef, useState } from "react";
-import ExerciseItem from "./ExerciseItem";
+import { ExerciseItem } from "./ExerciseItem";
 import classes from "./WorkoutDetails.module.css";
 import { FaRegWindowClose } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -215,7 +215,7 @@ export default function WorkoutDetails(props) {
         <li>EXERCICIO SETS REPS</li>
         {props.workout.exercises.map((exercise) => (
           <ExerciseItem
-            key={exercise.id}
+            key={exercise._id}
             exercise={exercise}
             onClick={() => {
               if (!isLive) return;

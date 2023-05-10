@@ -101,4 +101,77 @@ app.post("/finalize-workout", async (req, resp) => {
   }
 });
 
+app.post("/add-workout", async (req, resp) => {
+  try {
+    if (req.body.name == null || req.body.is_active == null)
+      throw Error("Error: Unexpected null value");
+    var workout = new Workout({
+      name: req.body.name,
+      description: req.body.description,
+      is_active: req.body.is_active,
+      exercises: JSON.parse(req.body.exercises),
+    });
+    workout.save();
+    resp.json({ name: req.body.name });
+  } catch (error) {
+    resp.json({ status: 500, message: "Error adding workout!" });
+  }
+});
+
+app.post("/edit-workout", async (req, resp) => {
+  try {
+    if (req.body.name == null || req.body.is_active == null)
+      throw Error("Error: Unexpected null value");
+    let workout = await Workout.findById(req.body.id);
+    workout.name = req.body.name;
+    workout.description = req.body.description;
+    workout.is_active = req.body.is_active;
+    let editedExercises = JSON.parse(req.body.exercises);
+    //removes the exercises that have been removed by the user and
+    //updates the exercises that have been updated by the user
+    let index = 0;
+    while (index < workout.exercises.length) {
+      if (
+        editedExercises.some(
+          (editedExercise) => workout.exercises[index]._id == editedExercise._id
+        )
+      ) {
+        editedExercises.forEach((editedExercise) => {
+          if (workout.exercises[index]._id == editedExercise._id) {
+            workout.exercises[index].name = editedExercise.name;
+            workout.exercises[index].observation = editedExercise.observation;
+            workout.exercises[index].sets = editedExercise.sets;
+            workout.exercises[index].reps = editedExercise.reps;
+            workout.exercises[index].load = editedExercise.load;
+          }
+        });
+        index++;
+      } else {
+        workout.exercises.splice(index, 1);
+      }
+    }
+    //adds the exercises that have been added by the user
+    editedExercises
+      .filter((editedExercise) => editedExercise._id == null)
+      .forEach((addedExercise) => {
+        workout.exercises.push(addedExercise);
+      });
+    // console.log(JSON.stringify(workout));
+    await workout.save();
+    resp.json({ id: req.body.id });
+  } catch (error) {
+    resp.json({ status: 500, message: "Error editing workout!" });
+  }
+});
+
+app.post("/delete-workout", async (req, resp) => {
+  try {
+    if (req.body.id == null) throw Error("Error: Unexpected null value");
+    await Workout.deleteOne({ _id: req.body.id });
+    resp.json({ id: req.body.id });
+  } catch (error) {
+    resp.json({ status: 500, message: "Error deleting workout!" });
+  }
+});
+
 app.listen(5000);
