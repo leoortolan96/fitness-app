@@ -168,6 +168,7 @@ app.post("/edit-workout", async (req, resp) => {
             workout.exercises[index].sets = editedExercise.sets;
             workout.exercises[index].reps = editedExercise.reps;
             workout.exercises[index].load = editedExercise.load;
+            workout.exercises[index].is_paused = editedExercise.is_paused;
           }
         });
         index++;

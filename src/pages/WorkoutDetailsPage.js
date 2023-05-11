@@ -131,6 +131,7 @@ function WorkoutDetailsPage() {
             ? () => {
                 if (!loadedWorkout.is_live) {
                   editWorkoutCtx.setEditedWorkout(loadedWorkout);
+                  editWorkoutCtx.setWorkoutIsActive(loadedWorkout.is_active);
                   navigate("/edit-workout/", {
                     state: { originalWorkout: loadedWorkout },
                   });

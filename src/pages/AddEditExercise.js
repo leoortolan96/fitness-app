@@ -6,6 +6,7 @@ import AppBar from "../components/layout/AppBar";
 import { useRef } from "react";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import EditWorkoutContext from "../store/edit-workout-context";
+import Switch from "react-switch";
 
 function AddEditExercisePage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState();
@@ -32,6 +33,7 @@ function AddEditExercisePage() {
         sets: setsInputRef.current.value.trim(),
         reps: repsInputRef.current.value.trim(),
         load: loadInputRef.current.value.trim(),
+        is_paused: editWorkoutCtx.exerciseIsPaused,
       };
       if (editedExercise.observation === "") editedExercise.observation = null;
       if (editedExercise.load === "") editedExercise.load = null;
@@ -154,6 +156,22 @@ function AddEditExercisePage() {
           </div>
         </form>
         <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+              <Switch
+                onChange={(checked) =>
+                  editWorkoutCtx.setExerciseIsPaused(!checked)
+                }
+                checked={!editWorkoutCtx.exerciseIsPaused}
+                uncheckedIcon={false}
+                checkedIcon={false}
+                id="exercise-switch"
+              />
+              <p>
+                {editWorkoutCtx.exerciseIsPaused
+                  ? "EXERCÍCIO PAUSADO"
+                  : "EXERCÍCIO ATIVO"}
+              </p>
+            </div>
           <button className={classes.save} form="exercise-form" type="submit">
             salvar exercício
           </button>

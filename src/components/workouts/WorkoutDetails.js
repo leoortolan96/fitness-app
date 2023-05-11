@@ -225,18 +225,20 @@ export default function WorkoutDetails(props) {
     <div>
       <ul className={classes.list}>
         <li>EXERCICIO SETS REPS</li>
-        {props.workout.exercises.map((exercise) => (
-          <ExerciseItem
-            key={exercise._id}
-            exercise={exercise}
-            onClick={() => {
-              if (!isLive) return;
-              setSelectedExercise(exercise);
-              setIsLoadDialogOpen(true);
-            }}
-            alteredLoads={alteredLoads}
-          />
-        ))}
+        {props.workout.exercises
+          .filter((exercise) => !exercise.is_paused)
+          .map((exercise) => (
+            <ExerciseItem
+              key={exercise._id}
+              exercise={exercise}
+              onClick={() => {
+                if (!isLive) return;
+                setSelectedExercise(exercise);
+                setIsLoadDialogOpen(true);
+              }}
+              alteredLoads={alteredLoads}
+            />
+          ))}
         {isLive ? (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <button

@@ -7,6 +7,7 @@ import { ExerciseItemEditMode } from "../components/workouts/ExerciseItem";
 import { useRef } from "react";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import EditWorkoutContext from "../store/edit-workout-context";
+import Switch from "react-switch";
 
 function AddEditWorkoutPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState();
@@ -29,6 +30,7 @@ function AddEditWorkoutPage() {
       let enteredName = nameInputRef.current.value.trim();
       let enteredDescription = descriptionInputRef.current.value.trim();
       if (enteredDescription === "") enteredDescription = null;
+      let enteredWorkoutIsActive = editWorkoutCtx.workoutIsActive;
       let exercises = editWorkoutCtx.editedWorkout.exercises.map((exercise) => {
         return {
           _id: exercise._id,
@@ -37,6 +39,7 @@ function AddEditWorkoutPage() {
           sets: exercise.sets,
           reps: exercise.reps,
           load: exercise.load,
+          is_paused: exercise.is_paused,
         };
       });
 
@@ -49,7 +52,7 @@ function AddEditWorkoutPage() {
             id: originalWorkout?._id,
             name: enteredName.trim(),
             description: enteredDescription,
-            is_active: true, //TODO implementar o switch
+            is_active: enteredWorkoutIsActive,
             exercises: JSON.stringify(exercises),
           }),
           headers: {
@@ -135,17 +138,21 @@ function AddEditWorkoutPage() {
               <ExerciseItemEditMode
                 key={index}
                 exercise={exercise}
-                onClick={() =>
+                onClick={() => {
+                  editWorkoutCtx.setExerciseIsPaused(exercise.is_paused);
                   navigate("/edit-exercise/", {
                     state: { originalExercise: exercise, exerciseIndex: index },
-                  })
-                }
+                  });
+                }}
               />
             ))}
             <div style={{ display: "flex", flexDirection: "column" }}>
               <button
                 className={classes.add_exercise}
-                onClick={() => navigate("/edit-exercise/")}
+                onClick={() => {
+                  editWorkoutCtx.setExerciseIsPaused(false);
+                  navigate("/edit-exercise/");
+                }}
               >
                 adicionar exercício
               </button>
@@ -181,6 +188,22 @@ function AddEditWorkoutPage() {
             </div>
           </form>
           <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Switch
+                onChange={(checked) =>
+                  editWorkoutCtx.setWorkoutIsActive(checked)
+                }
+                checked={editWorkoutCtx.workoutIsActive}
+                uncheckedIcon={false}
+                checkedIcon={false}
+                id="workout-switch"
+              />
+              <p>
+                {editWorkoutCtx.workoutIsActive
+                  ? "TREINO ATIVO"
+                  : "TREINO ARQUIVADO"}
+              </p>
+            </div>
             <button className={classes.save} form="workout-form" type="submit">
               {isSaveButtonLoading ? "..." : "salvar treino"}
             </button>

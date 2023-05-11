@@ -162,6 +162,7 @@ function MyWorkoutsPage() {
         actionIcon={<FaPlus size={20} />}
         action={() => {
           editWorkoutCtx.setEditedWorkout({ exercises: [] });
+          editWorkoutCtx.setWorkoutIsActive(true);
           navigate("/edit-workout/");
         }}
       />
