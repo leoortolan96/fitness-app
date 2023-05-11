@@ -1,9 +1,10 @@
 import { useSnackbar } from "notistack";
 import { useRef, useState } from "react";
-import { ExerciseItem } from "./ExerciseItem";
+import { ExerciseItem, ExerciseItemAlteredLoads } from "./ExerciseItem";
 import classes from "./WorkoutDetails.module.css";
 import { FaRegWindowClose } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import ConfirmDialog from "../ui/ConfirmDialog";
 
 export default function WorkoutDetails(props) {
   const [isLive, setIsLive] = useState(props.workout.is_live);
@@ -11,6 +12,10 @@ export default function WorkoutDetails(props) {
   const [isFinalizeButtonLoading, setIsFinalizeButtonLoading] = useState(false);
   const [isCancelButtonLoading, setIsCancelButtonLoading] = useState(false);
   const [isLoadDialogOpen, setIsLoadDialogOpen] = useState(false);
+  const [isCancelWorkoutDialogOpen, setIsCancelWorkoutDialogOpen] =
+    useState(false);
+  const [isFinalizeWorkoutDialogOpen, setIsFinalizeWorkoutDialogOpen] =
+    useState(false);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [alteredLoads, setAlteredLoads] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -33,7 +38,7 @@ export default function WorkoutDetails(props) {
         }
       );
       result = await result.json();
-      if (result.status === 500) throw Error("Error finalizing workout!");
+      if (result.status === 500) throw result.message;
       props.workout.is_live = isStarting;
       setIsLive(isStarting);
       if (isStarting) {
@@ -45,27 +50,35 @@ export default function WorkoutDetails(props) {
       } else {
         localStorage.removeItem("live_workout_initial");
         localStorage.removeItem("live_workout_start");
+        setIsCancelWorkoutDialogOpen(false);
       }
       localStorage.removeItem("altered_loads");
       setAlteredLoads([]);
-      // console.log(
-      //   "initial time:\n" + localStorage.getItem("live_workout_start")
-      // );
-      // console.log("initial:\n" + localStorage.getItem("live_workout_initial"));
-      // console.log("current:\n" + localStorage.getItem("altered_loads"));
     } catch (error) {
-      console.log(error);
-      enqueueSnackbar(
-        <ul className={classes.snackbar}>
-          <li>
-            <h3>Error updating workout...</h3>
-          </li>
-          <li>
-            <p>Check your connection and try again...</p>
-          </li>
-        </ul>,
-        { variant: "error" }
-      );
+      if (error.includes("User already has live workout"))
+        enqueueSnackbar(
+          <ul className={classes.snackbar}>
+            <li>
+              <h3>Erro ao iniciar treino...</h3>
+            </li>
+            <li>
+              <p>Você já possui um treino em andamento...</p>
+            </li>
+          </ul>,
+          { variant: "warning" }
+        );
+      else
+        enqueueSnackbar(
+          <ul className={classes.snackbar}>
+            <li>
+              <h3>Error updating workout...</h3>
+            </li>
+            <li>
+              <p>Check your connection and try again...</p>
+            </li>
+          </ul>,
+          { variant: "error" }
+        );
     } finally {
       if (isStarting) setIsStartButtonLoading(false);
       else setIsCancelButtonLoading(false);
@@ -76,7 +89,7 @@ export default function WorkoutDetails(props) {
     try {
       // e.preventDefault();
       setIsFinalizeButtonLoading(true);
-      // await new Promise(resolve => setTimeout(resolve, 2000));
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
       let alteredLoads =
         JSON.parse(localStorage.getItem("altered_loads")) ?? [];
       let startTime = new Date(localStorage.getItem("live_workout_start"));
@@ -157,18 +170,23 @@ export default function WorkoutDetails(props) {
 
     return (
       <div className={classes.overlay} onClick={onClose}>
-        <div className={classes.dialog} onClick={(e) => e.stopPropagation()}>
+        <form className={classes.form} onSubmit={submitHandler}>
           <div
-            className={classes.header}
-            style={{ display: "flex", alignItems: "center" }}
+            className={classes.dialog}
+            onClick={(e) => e.stopPropagation()}
+            style={{ display: "flex", flexDirection: "column" }}
           >
-            <h2 style={{ flexGrow: "1" }}>ALTERAR CARGA</h2>
-            <button onClick={onClose}>
-              <FaRegWindowClose size={25} />
-            </button>
-          </div>
-          <form className={classes.form} onSubmit={submitHandler}>
-            <div className={classes.dialog_content}>
+            <div
+              className={classes.header}
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <h2 style={{ flexGrow: "1" }}>ALTERAR CARGA</h2>
+              <button onClick={onClose}>
+                <FaRegWindowClose size={25} />
+              </button>
+            </div>
+
+            <div className={classes.dialog_content} style={{ flexGrow: "1" }}>
               <p>
                 {selectedExercise.name}, {selectedExercise.sets}x
                 {selectedExercise.reps}
@@ -192,8 +210,8 @@ export default function WorkoutDetails(props) {
                 salvar
               </button>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     );
     // return (
@@ -209,35 +227,122 @@ export default function WorkoutDetails(props) {
     // );
   }
 
+  function FinalizeWorkoutDialog() {
+    if (!isFinalizeWorkoutDialogOpen) return <></>;
+
+    let startTime = new Date(localStorage.getItem("live_workout_start"));
+    let endTime = new Date();
+    let durationMinutes = Math.ceil((endTime - startTime) / (1000 * 60));
+    let alteredLoads = JSON.parse(localStorage.getItem("altered_loads")) ?? [];
+    let alteredExercises = [];
+    alteredLoads.forEach((alteredLoad) => {
+      let exercise = props.workout.exercises.find(
+        (exercise) => exercise._id === alteredLoad.exercise_id
+      );
+      if (exercise.load !== alteredLoad.new_load)
+        alteredExercises.push({
+          name: exercise.name,
+          oldLoad: exercise.load,
+          currentLoad: alteredLoad.new_load,
+        });
+    });
+
+    return (
+      <div
+        className={classes.overlay}
+        onClick={() => setIsFinalizeWorkoutDialogOpen(false)}
+      >
+        <div
+          className={classes.dialog}
+          onClick={(e) => e.stopPropagation()}
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <div
+            className={classes.header}
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <h2 style={{ flexGrow: "1" }}>RESUMO DO TREINO</h2>
+            <button onClick={() => setIsFinalizeWorkoutDialogOpen(false)}>
+              <FaRegWindowClose size={25} />
+            </button>
+          </div>
+          <div className={classes.dialog_content} style={{ flexGrow: "1" }}>
+            <h3>{"Duração:  " + durationMinutes + " min"}</h3>
+            <br />
+            <ul className={classes.list}>
+              {alteredExercises.length > 0 ? (
+                <>
+                  <li>ALTERAÇÕES DE CARGA</li>
+                  {alteredExercises.map((exercise, index) => (
+                    <ExerciseItemAlteredLoads key={index} exercise={exercise} />
+                  ))}
+                  <p>As demais cargas foram mantidas</p>
+                </>
+              ) : (
+                <p>Todas as cargas foram mantidas</p>
+              )}
+            </ul>
+          </div>
+          <div style={{ display: "flex" }}>
+            <button
+              className={classes.finalize_dialog}
+              style={{ flexGrow: "1" }}
+              onClick={finalizeWorkout}
+            >
+              {isFinalizeButtonLoading ? "..." : "finalizar treino"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function CancelWorkoutDialog() {
+    return (
+      <ConfirmDialog
+        show={isCancelWorkoutDialogOpen}
+        onClose={() => setIsCancelWorkoutDialogOpen(false)}
+        onConfirm={() => startCancelWorkout(false)}
+        title="CANCELAR TREINO"
+        text="As alterações de carga serão descartadas e o treino não será adicionado ao seu histórico."
+        secondaryText="Deseja continuar?"
+        isCritical={true}
+        buttonText={isCancelButtonLoading ? "..." : "cancelar treino"}
+      />
+    );
+  }
+
   return (
     <div>
       <ul className={classes.list}>
         <li>EXERCICIO SETS REPS</li>
-        {props.workout.exercises.map((exercise) => (
-          <ExerciseItem
-            key={exercise._id}
-            exercise={exercise}
-            onClick={() => {
-              if (!isLive) return;
-              setSelectedExercise(exercise);
-              setIsLoadDialogOpen(true);
-            }}
-            alteredLoads={alteredLoads}
-          />
-        ))}
+        {props.workout.exercises
+          .filter((exercise) => !exercise.is_paused)
+          .map((exercise) => (
+            <ExerciseItem
+              key={exercise._id}
+              exercise={exercise}
+              onClick={() => {
+                if (!isLive) return;
+                setSelectedExercise(exercise);
+                setIsLoadDialogOpen(true);
+              }}
+              alteredLoads={alteredLoads}
+            />
+          ))}
         {isLive ? (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <button
               className={classes.finalize}
-              onClick={() => finalizeWorkout()}
+              onClick={() => setIsFinalizeWorkoutDialogOpen(true)}
             >
-              {isFinalizeButtonLoading ? "..." : "finalizar treino"}
+              finalizar treino
             </button>
             <button
               className={classes.cancel}
-              onClick={() => startCancelWorkout(false)}
+              onClick={() => setIsCancelWorkoutDialogOpen(true)}
             >
-              {isCancelButtonLoading ? "..." : "cancelar treino"}
+              cancelar treino
             </button>
           </div>
         ) : (
@@ -252,6 +357,8 @@ export default function WorkoutDetails(props) {
         )}
       </ul>
       <ChangeLoadDialog />
+      <FinalizeWorkoutDialog />
+      <CancelWorkoutDialog />
     </div>
   );
 }

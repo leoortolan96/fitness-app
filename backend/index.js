@@ -65,10 +65,35 @@ app.get("/live-workout", async (req, resp) => {
 
 app.post("/start-cancel-workout", async (req, resp) => {
   try {
+    if (req.body.is_live) {
+      let liveCountQueryResult = await Workout.aggregate([
+        {
+          $match: {
+            is_live: {
+              $eq: true,
+            },
+          },
+        },
+        {
+          $count: "live_count",
+        },
+      ]);
+      if (
+        liveCountQueryResult.length > 0 &&
+        liveCountQueryResult[0].live_count > 0
+      )
+        throw "User already has live workout";
+    }
     await Workout.findByIdAndUpdate(req.body.id, { is_live: req.body.is_live });
     resp.json({ id: req.body.id });
   } catch (error) {
-    resp.json({ status: 500, message: "Error updating workout!" });
+    resp.json({
+      status: 500,
+      message:
+        error === "User already has live workout"
+          ? "User already has live workout"
+          : "Error updating workout!",
+    });
   }
 });
 
@@ -143,6 +168,7 @@ app.post("/edit-workout", async (req, resp) => {
             workout.exercises[index].sets = editedExercise.sets;
             workout.exercises[index].reps = editedExercise.reps;
             workout.exercises[index].load = editedExercise.load;
+            workout.exercises[index].is_paused = editedExercise.is_paused;
           }
         });
         index++;
