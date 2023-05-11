@@ -53,3 +53,19 @@ export function ExerciseItemEditMode(props) {
     </li>
   );
 }
+
+export function ExerciseItemAlteredLoads(props) {
+  return (
+    <li className={classes.item} style={{ margin: "0px" }}>
+      <div className={classes.content}>
+        <p>{props.exercise.name}</p>
+        <div style={{ display: "flex" }}>
+          <h4 className={classes.old_load} style={{ marginRight: "15px" }}>
+            {props.exercise.oldLoad ?? "--"}
+          </h4>
+          <h4 style={{ flexGrow: "1" }}>{props.exercise.currentLoad ?? ""}</h4>
+        </div>
+      </div>
+    </li>
+  );
+}
