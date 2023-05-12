@@ -6,10 +6,9 @@
 }
 
 .main {
-  margin-top: 60px;
+  padding-top: 60px;
   width: 100%;
-  max-width: 40rem;
-  background-color: var(--light);
+  /* background-color: var(--light); */
 }
 
 /* .mainGrid {
