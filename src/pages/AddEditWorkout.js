@@ -132,8 +132,17 @@ function AddEditWorkoutPage() {
       />
       {editWorkoutCtx.editedWorkout != null ? (
         <div>
+          <div className={classes.header}>
+            <div style={{ flex: "1 1 auto" }}>EXERCÍCIO</div>
+            <div
+              style={{ width: "50px", textAlign: "right", padding: "0 5px" }}
+            >
+              SETS
+            </div>
+            <div style={{ width: "70px", textAlign: "right" }}>REPS</div>
+          </div>
           <ul className={classes.list}>
-            <li>EXERCICIO SETS REPS</li>
+            <div style={{ paddingTop: "35px" }} />
             {editWorkoutCtx.editedWorkout.exercises.map((exercise, index) => (
               <ExerciseItemEditMode
                 key={index}
@@ -188,21 +197,29 @@ function AddEditWorkoutPage() {
             </div>
           </form>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              className={classes.switch_button}
+              onClick={() =>
+                editWorkoutCtx.setWorkoutIsActive(
+                  !editWorkoutCtx.workoutIsActive
+                )
+              }
+              style={{ display: "flex", alignItems: "center" }}
+            >
               <Switch
-                onChange={(checked) =>
-                  editWorkoutCtx.setWorkoutIsActive(checked)
-                }
+                onChange={(_) => {
+                  // editWorkoutCtx.setWorkoutIsActive(checked)
+                }}
                 checked={editWorkoutCtx.workoutIsActive}
                 uncheckedIcon={false}
                 checkedIcon={false}
                 id="workout-switch"
               />
-              <p>
+              <div style={{ margin: "0 10px" }}>
                 {editWorkoutCtx.workoutIsActive
                   ? "TREINO ATIVO"
                   : "TREINO ARQUIVADO"}
-              </p>
+              </div>
             </div>
             <button className={classes.save} form="workout-form" type="submit">
               {isSaveButtonLoading ? "..." : "salvar treino"}

@@ -1,5 +1,5 @@
 import classes from "./ConfirmDialog.module.css";
-import { FaRegWindowClose } from "react-icons/fa";
+import { CgClose } from "react-icons/cg";
 
 function ConfirmDialog(props) {
   //   console.log(JSON.stringify(props));
@@ -13,7 +13,7 @@ function ConfirmDialog(props) {
         >
           <h2 style={{ flexGrow: "1" }}>{props.title ?? " "}</h2>
           <button onClick={props.onClose}>
-            <FaRegWindowClose size={25} />
+            <CgClose size={25} />
           </button>
         </div>
         <div className={classes.content}>

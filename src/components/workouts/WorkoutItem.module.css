@@ -1,13 +1,53 @@
+@import "/src/shared/colors.css";
+
 .item {
-  margin: 1rem 0;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .content {
   text-align: left;
-  padding: 1rem;
+  padding: 15px;
 }
 
 .content h3 {
-  font-size: 1.25rem;
-  color: #2c292b;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 5px 0 0 0;
+  color: var(--primary);
+}
+
+.content p,
+.active_label,
+.archived_label {
+  font-size: 16px;
+  font-weight: 400;
+  margin: 6px 0 0 0;
+  color: var(--neutralMedium);
+}
+
+.active_label {
+  color: var(--icons);
+}
+
+.archived_label {
+  color: var(--neutralLight);
+}
+
+.active,
+.archived {
+  height: 8px;
+  width: 8px;
+  display: flex;
+  border-radius: 50%;
+  margin: 3px 4px 0 0;
+}
+
+.active {
+  background-color: var(--icons);
+}
+
+.archived {
+  background-color: var(--neutralLight);
 }

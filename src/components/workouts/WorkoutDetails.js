@@ -2,7 +2,7 @@ import { useSnackbar } from "notistack";
 import { useRef, useState } from "react";
 import { ExerciseItem, ExerciseItemAlteredLoads } from "./ExerciseItem";
 import classes from "./WorkoutDetails.module.css";
-import { FaRegWindowClose } from "react-icons/fa";
+import { CgClose } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import ConfirmDialog from "../ui/ConfirmDialog";
 
@@ -17,9 +17,16 @@ export default function WorkoutDetails(props) {
   const [isFinalizeWorkoutDialogOpen, setIsFinalizeWorkoutDialogOpen] =
     useState(false);
   const [selectedExercise, setSelectedExercise] = useState(null);
-  const [alteredLoads, setAlteredLoads] = useState([]);
+  const [alteredLoads, setAlteredLoads] = useState();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+
+  setTimeout(() => {
+    if (alteredLoads == null)
+      setAlteredLoads(
+        JSON.parse(localStorage.getItem("altered_loads") ?? "[]")
+      );
+  }, 20);
 
   async function startCancelWorkout(isStarting) {
     try {
@@ -177,12 +184,12 @@ export default function WorkoutDetails(props) {
             style={{ display: "flex", flexDirection: "column" }}
           >
             <div
-              className={classes.header}
+              className={classes.dialog_header}
               style={{ display: "flex", alignItems: "center" }}
             >
               <h2 style={{ flexGrow: "1" }}>ALTERAR CARGA</h2>
               <button onClick={onClose}>
-                <FaRegWindowClose size={25} />
+                <CgClose size={25} />
               </button>
             </div>
 
@@ -192,12 +199,15 @@ export default function WorkoutDetails(props) {
                 {selectedExercise.reps}
               </p>
               <br />
-              <h4>ATUAL: {selectedExercise.load}</h4>
+              <h4 style={{ margin: "4px 0" }}>
+                ATUAL: {selectedExercise.load}
+              </h4>
 
               <div style={{ display: "flex" }}>
-                <h4>NOVA: </h4>
+                <h4 style={{ margin: "4px 0" }}>NOVA: </h4>
                 <input
                   type="text"
+                  autoFocus
                   required
                   id="load"
                   ref={loadInputRef}
@@ -258,12 +268,12 @@ export default function WorkoutDetails(props) {
           style={{ display: "flex", flexDirection: "column" }}
         >
           <div
-            className={classes.header}
+            className={classes.dialog_header}
             style={{ display: "flex", alignItems: "center" }}
           >
             <h2 style={{ flexGrow: "1" }}>RESUMO DO TREINO</h2>
             <button onClick={() => setIsFinalizeWorkoutDialogOpen(false)}>
-              <FaRegWindowClose size={25} />
+              <CgClose size={25} />
             </button>
           </div>
           <div className={classes.dialog_content} style={{ flexGrow: "1" }}>
@@ -314,8 +324,15 @@ export default function WorkoutDetails(props) {
 
   return (
     <div>
+      <div className={classes.header}>
+        <div style={{ flex: "1 1 auto" }}>EXERCÍCIO</div>
+        <div style={{ width: "50px", textAlign: "right", padding: "0 5px" }}>
+          SETS
+        </div>
+        <div style={{ width: "70px", textAlign: "right" }}>REPS</div>
+      </div>
       <ul className={classes.list}>
-        <li>EXERCICIO SETS REPS</li>
+        <div style={{ paddingTop: "35px" }} />
         {props.workout.exercises
           .filter((exercise) => !exercise.is_paused)
           .map((exercise) => (
@@ -327,7 +344,7 @@ export default function WorkoutDetails(props) {
                 setSelectedExercise(exercise);
                 setIsLoadDialogOpen(true);
               }}
-              alteredLoads={alteredLoads}
+              alteredLoads={alteredLoads ?? []}
             />
           ))}
         {isLive ? (

@@ -5,14 +5,14 @@
 body {
   font-family: sans-serif;
   margin: 0;
-  background-color: #f3f3f3;
+  background-color: #f6f7f8;
 }
 
-h1, h2 {
+/* h1, h2 {
   color: #333333;
-}
+} */
 
-.btn {
+/* .btn {
   font: inherit;
   padding: 0.5rem 1.5rem;
   cursor: pointer;
@@ -21,35 +21,35 @@ h1, h2 {
   color: white;
   border: 1px solid #800040;
   margin: 0 1rem;
-}
+} */
 
-.btn:hover {
+/* .btn:hover {
   background-color: #9c1458;
   border-color: #9c1458;
-}
+} */
 
-.btn--alt {
+/* .btn--alt {
   background-color: transparent;
   color: #800040;
-}
+} */
 
-.btn--alt:hover {
+/* .btn--alt:hover {
   background-color: #f8dae9;
-}
+} */
 
-.card {
+/* .card {
   background-color: white;
   border-radius: 4px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   padding: 1rem;
   width: 20rem;
-}
+} */
 
-.actions {
+/* .actions {
   text-align: right;
-}
+} */
 
-.modal {
+/* .modal {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   border-radius: 6px;
   background-color: white;
@@ -60,9 +60,9 @@ h1, h2 {
   position: fixed;
   top: 20vh;
   left: calc(50% - 15rem);
-}
+} */
 
-.backdrop {
+/* .backdrop {
   position: fixed;
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.75);
@@ -70,4 +70,4 @@ h1, h2 {
   height: 100vh;
   top: 0;
   left: 0;
-}
+} */

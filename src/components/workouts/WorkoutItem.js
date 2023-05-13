@@ -40,12 +40,22 @@ export default function WorkoutItem(props) {
       <Card onClick={onWorkoutClick}>
         <div className={classes.content}>
           <h3>{props.workout.name}</h3>
-          <h4>{props.workout.description ?? " "}</h4>
-          <div style={{ display: "flex" }}>
-            <p>{props.workout.is_active ? "ATIVO" : "ARQUIVADO"}</p>
-            <p style={{marginLeft: "15px"}}>{workoutsCount}x</p>
+          <p>{props.workout.description ?? " "}</p>
+          <div style={{ display: "flex", padding: "10px 0", alignItems:"center"}}>
+            {props.workout.is_active ? (
+              <>
+                <div className={classes.active}></div>
+                <div className={classes.active_label}>ATIVO</div>
+              </>
+            ) : (
+              <>
+                <div className={classes.archived}></div>
+                <div className={classes.archived_label}>ARQUIVADO</div>
+              </>
+            )}
+            <p style={{ marginLeft: "15px" }}>{workoutsCount}x</p>
           </div>
-          
+
           <p>PRIMEIRO: {startDateString}</p>
           <p>ÚLTIMO: {endDateString}</p>
         </div>

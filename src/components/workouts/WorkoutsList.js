@@ -11,14 +11,22 @@ export default function WorkoutsList(props) {
 
   return (
     <ul className={classes.list}>
-      <li>TREINOS ATIVOS</li>
-      {activeWorkouts.map((workout) => (
-        <WorkoutItem key={workout.id} workout={workout} />
-      ))}
-      <li>TREINOS ARQUIVADOS</li>
-      {archivedWorkouts.map((workout) => (
-        <WorkoutItem key={workout.id} workout={workout} />
-      ))}
+      <li className={classes.section_title}>TREINOS ATIVOS</li>
+      {activeWorkouts.length > 0 ? (
+        activeWorkouts.map((workout) => (
+          <WorkoutItem key={workout.id} workout={workout} />
+        ))
+      ) : (
+        <p className={classes.empty}>Nenhum treino ativo...</p>
+      )}
+      <li className={classes.section_title}>TREINOS ARQUIVADOS</li>
+      {archivedWorkouts.length > 0 ? (
+        archivedWorkouts.map((workout) => (
+          <WorkoutItem key={workout.id} workout={workout} />
+        ))
+      ) : (
+        <p className={classes.empty}>Nenhum treino arquivado...</p>
+      )}
     </ul>
   );
 }

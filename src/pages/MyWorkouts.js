@@ -166,19 +166,17 @@ function MyWorkoutsPage() {
           navigate("/edit-workout/");
         }}
       />
-      {isLoading ? (
-        <section>
-          <p>Loading...</p>
-        </section>
-      ) : errorMessage ? (
-        <section>
-          <p>{errorMessage}</p>
-        </section>
-      ) : (
-        <section>
-          <WorkoutsList workouts={loadedWorkouts} />
-        </section>
-      )}
+      <div className={classes.page}>
+        <div className={classes.list}>
+          {isLoading ? (
+            <div className={classes.loading}>Loading...</div>
+          ) : errorMessage ? (
+            <div className={classes.loading}>{errorMessage}</div>
+          ) : (
+            <WorkoutsList workouts={loadedWorkouts} />
+          )}
+        </div>
+      </div>
       <BottomNavBar />
     </div>
   );

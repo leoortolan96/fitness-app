@@ -113,29 +113,22 @@ function LiveWorkoutPage() {
   }, []);
 
   return (
-    <div>
+    <div style={{paddingBottom: "60px"}}>
       <AppBar
         title={loadedWorkout ? loadedWorkout.name : "EM ANDAMENTO"}
         showBackButton={false}
       />
       {isLoading ? (
-        <section>
-          <p>Loading...</p>
-        </section>
+        <div className={classes.loading}>Loading...</div>
       ) : errorMessage ? (
-        <section>
-          <p>{errorMessage}</p>
-        </section>
+        <div className={classes.loading}>{errorMessage}</div>
       ) : !loadedWorkout ? (
-        <section>
+        <div className={classes.loading}>
           <p>Nenhum treino em andamento </p>
-          <p> </p>
           <p>Inicie um treino para que ele seja mostrado aqui </p>
-        </section>
+        </div>
       ) : (
-        <section>
-          <WorkoutDetails workout={loadedWorkout} />
-        </section>
+        <WorkoutDetails workout={loadedWorkout} />
       )}
       <BottomNavBar />
     </div>
