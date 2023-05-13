@@ -2,7 +2,7 @@ import { useSnackbar } from "notistack";
 import { useRef, useState } from "react";
 import { ExerciseItem, ExerciseItemAlteredLoads } from "./ExerciseItem";
 import classes from "./WorkoutDetails.module.css";
-import { FaRegWindowClose } from "react-icons/fa";
+import { CgClose } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import ConfirmDialog from "../ui/ConfirmDialog";
 
@@ -177,12 +177,12 @@ export default function WorkoutDetails(props) {
             style={{ display: "flex", flexDirection: "column" }}
           >
             <div
-              className={classes.header}
+              className={classes.dialog_header}
               style={{ display: "flex", alignItems: "center" }}
             >
               <h2 style={{ flexGrow: "1" }}>ALTERAR CARGA</h2>
               <button onClick={onClose}>
-                <FaRegWindowClose size={25} />
+                <CgClose size={25} />
               </button>
             </div>
 
@@ -258,12 +258,12 @@ export default function WorkoutDetails(props) {
           style={{ display: "flex", flexDirection: "column" }}
         >
           <div
-            className={classes.header}
+            className={classes.dialog_header}
             style={{ display: "flex", alignItems: "center" }}
           >
             <h2 style={{ flexGrow: "1" }}>RESUMO DO TREINO</h2>
             <button onClick={() => setIsFinalizeWorkoutDialogOpen(false)}>
-              <FaRegWindowClose size={25} />
+              <CgClose size={25} />
             </button>
           </div>
           <div className={classes.dialog_content} style={{ flexGrow: "1" }}>
@@ -314,8 +314,15 @@ export default function WorkoutDetails(props) {
 
   return (
     <div>
+      <div className={classes.header}>
+        <div style={{ flex: "1 1 auto" }}>EXERCÍCIO</div>
+        <div style={{ width: "50px", textAlign: "right", padding: "0 5px" }}>
+          SETS
+        </div>
+        <div style={{ width: "70px", textAlign: "right" }}>REPS</div>
+      </div>
       <ul className={classes.list}>
-        <li>EXERCICIO SETS REPS</li>
+        <div style={{ paddingTop: "35px" }} />
         {props.workout.exercises
           .filter((exercise) => !exercise.is_paused)
           .map((exercise) => (

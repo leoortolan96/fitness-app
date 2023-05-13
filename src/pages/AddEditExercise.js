@@ -1,6 +1,6 @@
 import { useSnackbar } from "notistack";
 import { useContext, useState } from "react";
-import classes from "./AddEditWorkout.module.css";
+import classes from "./AddEditExercise.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import AppBar from "../components/layout/AppBar";
 import { useRef } from "react";
@@ -156,22 +156,30 @@ function AddEditExercisePage() {
           </div>
         </form>
         <div style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-              <Switch
-                onChange={(checked) =>
-                  editWorkoutCtx.setExerciseIsPaused(!checked)
-                }
-                checked={!editWorkoutCtx.exerciseIsPaused}
-                uncheckedIcon={false}
-                checkedIcon={false}
-                id="exercise-switch"
-              />
-              <p>
-                {editWorkoutCtx.exerciseIsPaused
-                  ? "EXERCÍCIO PAUSADO"
-                  : "EXERCÍCIO ATIVO"}
-              </p>
+          <div
+            className={classes.switch_button}
+            onClick={() =>
+              editWorkoutCtx.setExerciseIsPaused(
+                !editWorkoutCtx.exerciseIsPaused
+              )
+            }
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <Switch
+              onChange={(_) => {
+                // editWorkoutCtx.setExerciseIsPaused(!checked);
+              }}
+              checked={!editWorkoutCtx.exerciseIsPaused}
+              uncheckedIcon={false}
+              checkedIcon={false}
+              id="exercise-switch"
+            />
+            <div style={{ margin: "0 10px" }}>
+              {editWorkoutCtx.exerciseIsPaused
+                ? "EXERCÍCIO PAUSADO"
+                : "EXERCÍCIO ATIVO"}
             </div>
+          </div>
           <button className={classes.save} form="exercise-form" type="submit">
             salvar exercício
           </button>

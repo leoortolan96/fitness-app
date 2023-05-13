@@ -113,7 +113,7 @@ function LiveWorkoutPage() {
   }, []);
 
   return (
-    <div>
+    <div style={{paddingBottom: "60px"}}>
       <AppBar
         title={loadedWorkout ? loadedWorkout.name : "EM ANDAMENTO"}
         showBackButton={false}
@@ -128,9 +128,7 @@ function LiveWorkoutPage() {
           <p>Inicie um treino para que ele seja mostrado aqui </p>
         </div>
       ) : (
-        <section>
-          <WorkoutDetails workout={loadedWorkout} />
-        </section>
+        <WorkoutDetails workout={loadedWorkout} />
       )}
       <BottomNavBar />
     </div>

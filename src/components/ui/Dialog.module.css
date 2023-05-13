@@ -42,6 +42,8 @@
 .header h2 {
   margin: 0px;
   color: var(--secondary);
+  font-size: 22px;
+  font-weight: 600;
 }
 
 .header button {

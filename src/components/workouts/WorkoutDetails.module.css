@@ -6,6 +6,21 @@
   padding: 0;
 }
 
+.header {
+  position: fixed;
+  height: 35px;
+  width: 100%;
+  top: 60;
+  left: 0;
+  background-color: var(--light);
+  padding: 0 10px;
+  align-items: center;
+  border-bottom: 1px solid var(--neutralUltralight);
+  display: flex;
+  color: var(--neutralLight);
+  font-size: 15px;
+}
+
 .start {
   /* height: 90; */
   padding: 40px 10px;
@@ -14,6 +29,7 @@
   color: var(--light);
   border-radius: 6px;
   border: none;
+  font-size: 16px;
 }
 
 .finalize {
@@ -24,6 +40,7 @@
   color: var(--light);
   border-radius: 6px;
   border: none;
+  font-size: 16px;
 }
 
 .save_load,
@@ -36,6 +53,7 @@
   color: var(--light);
   border-radius: 6px;
   border: none;
+  font-size: 16px;
 }
 
 .cancel {
@@ -46,6 +64,7 @@
   color: var(--neutralMedium);
   border-radius: 6px;
   border: none;
+  font-size: 16px;
 }
 
 .snackbar {
@@ -96,6 +115,12 @@
 .dialog_content {
   padding: 15px 15px 30px 15px;
   overflow-y: auto;
+  color: var(--neutralMedium);
+}
+
+.dialog_content h3 {
+  font-weight: 600;
+  color: var(--neutralDark);
 }
 
 .dialog_content h4 {
@@ -111,19 +136,21 @@
   margin: 0 5px;
 }
 
-.header {
+.dialog_header {
   color: var(--secondary);
   border-bottom: 1px solid var(--neutralUltralight);
   padding: 10px 15px;
   /* width: 100%; */
 }
 
-.header h2 {
+.dialog_header h2 {
   margin: 0px;
   color: var(--secondary);
+  font-size: 22px;
+  font-weight: 600;
 }
 
-.header button {
+.dialog_header button {
   color: var(--secondary);
   background-color: transparent;
   border: none;

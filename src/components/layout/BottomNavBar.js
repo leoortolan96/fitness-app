@@ -1,6 +1,6 @@
 import classes from "./BottomNavBar.module.css";
-import { FaArrowDown, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { TbWeight, TbPlayerPlay, TbChartBar } from "react-icons/tb";
 
 export default function BottomNavBar() {
   // const navigationCtx = useContext(NavigationContext);
@@ -38,7 +38,7 @@ export default function BottomNavBar() {
             path === "/" ? classes.selectedNavItem : classes.navItem
           }
         >
-          <FaArrowLeft size={20} />
+          <TbWeight size={24} />
           <p>TREINOS</p>
         </div>
       </button>
@@ -49,7 +49,7 @@ export default function BottomNavBar() {
             path === "/live-workout" ? classes.selectedNavItem : classes.navItem
           }
         >
-          <FaArrowDown size={20} />
+          <TbPlayerPlay size={24} />
           <p>EM ANDAMENTO</p>
         </div>
       </button>
@@ -60,7 +60,7 @@ export default function BottomNavBar() {
             path === "/history" ? classes.selectedNavItem : classes.navItem
           }
         >
-          <FaArrowRight size={20} />
+          <TbChartBar size={24} />
           <p>HISTÓRICO</p>
         </div>
       </button>

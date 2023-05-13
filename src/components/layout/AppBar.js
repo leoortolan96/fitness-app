@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import classes from "./AppBar.module.css";
-import { FaArrowLeft } from "react-icons/fa";
+import { IoIosArrowBack } from "react-icons/io";
 
 function AppBar(props) {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ function AppBar(props) {
       <div className={classes.button_box}>
         {props.showBackButton ? (
           <button onClick={() => navigate(-1)}>
-            <FaArrowLeft size={20} />
+            <IoIosArrowBack size={26} />
           </button>
         ) : (
           <div />

@@ -1,5 +1,5 @@
 import classes from "./Dialog.module.css";
-import { FaRegWindowClose } from "react-icons/fa";
+import { CgClose } from "react-icons/cg";
 
 // let dialogStyles = {
 //   width: "500px",
@@ -57,7 +57,7 @@ function Dialog(props) {
         >
           <h2 style={{ flexGrow: "1" }}>{props.title ?? " "}</h2>
           <button onClick={props.onClose}>
-            <FaRegWindowClose size={25} />
+            <CgClose size={25} />
           </button>
         </div>
         {props.children}
