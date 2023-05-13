@@ -27,9 +27,7 @@ export function ExerciseItem(props) {
       </div>
       <div style={{ display: "flex" }}>
         {oldLoad !== currentLoad ? (
-          <h4 className={classes.old_load} style={{ marginRight: "15px" }}>
-            {oldLoad ?? ""}
-          </h4>
+          <div className={classes.old_load}>{oldLoad ?? ""}</div>
         ) : (
           <></>
         )}
@@ -71,9 +69,7 @@ export function ExerciseItemAlteredLoads(props) {
     <li className={classes.item} style={{ margin: "0px" }}>
       <h1>{props.exercise.name}</h1>
       <div style={{ display: "flex" }}>
-        <h4 className={classes.old_load} style={{ marginRight: "15px" }}>
-          {props.exercise.oldLoad ?? "--"}
-        </h4>
+        <div className={classes.old_load}>{props.exercise.oldLoad ?? "--"}</div>
         <h4 style={{ flex: "1 1 auto" }}>{props.exercise.currentLoad ?? ""}</h4>
       </div>
     </li>

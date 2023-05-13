@@ -17,9 +17,16 @@ export default function WorkoutDetails(props) {
   const [isFinalizeWorkoutDialogOpen, setIsFinalizeWorkoutDialogOpen] =
     useState(false);
   const [selectedExercise, setSelectedExercise] = useState(null);
-  const [alteredLoads, setAlteredLoads] = useState([]);
+  const [alteredLoads, setAlteredLoads] = useState();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+
+  setTimeout(() => {
+    if (alteredLoads == null)
+      setAlteredLoads(
+        JSON.parse(localStorage.getItem("altered_loads") ?? "[]")
+      );
+  }, 20);
 
   async function startCancelWorkout(isStarting) {
     try {
@@ -192,12 +199,15 @@ export default function WorkoutDetails(props) {
                 {selectedExercise.reps}
               </p>
               <br />
-              <h4>ATUAL: {selectedExercise.load}</h4>
+              <h4 style={{ margin: "4px 0" }}>
+                ATUAL: {selectedExercise.load}
+              </h4>
 
               <div style={{ display: "flex" }}>
-                <h4>NOVA: </h4>
+                <h4 style={{ margin: "4px 0" }}>NOVA: </h4>
                 <input
                   type="text"
+                  autoFocus
                   required
                   id="load"
                   ref={loadInputRef}
@@ -334,7 +344,7 @@ export default function WorkoutDetails(props) {
                 setSelectedExercise(exercise);
                 setIsLoadDialogOpen(true);
               }}
-              alteredLoads={alteredLoads}
+              alteredLoads={alteredLoads ?? []}
             />
           ))}
         {isLive ? (

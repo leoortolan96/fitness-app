@@ -123,10 +123,6 @@
   color: var(--neutralDark);
 }
 
-.dialog_content h4 {
-  margin: 4px 0px;
-}
-
 .dialog_content input {
   font: inherit;
   border-radius: 0px;

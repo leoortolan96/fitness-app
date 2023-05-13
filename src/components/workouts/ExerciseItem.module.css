@@ -36,6 +36,9 @@
 
 .old_load {
   color: var(--neutralLight);
-  /* margin-right: 15px; */
+  font-size: 16px;
+  font-weight: 400;
+  margin-right: 15px;
+  margin-bottom: 2px;
   text-decoration: line-through;
 }
