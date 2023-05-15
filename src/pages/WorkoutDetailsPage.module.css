@@ -1,11 +1,21 @@
 .snackbar {
-    margin: 0;
-    padding: 0 10px;
-    list-style: none;
-  }
-  
-  .snackbar h3,
-  .snackbar p {
-    margin: 0;
-    padding: 0;
-  }
+  margin: 0;
+  padding: 0 10px;
+  list-style: none;
+}
+
+.snackbar h3,
+.snackbar p {
+  margin: 0;
+  padding: 0;
+}
+
+.loading {
+  width: 80%;
+  color: var(--neutralLight);
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
