@@ -324,15 +324,14 @@ export default function WorkoutDetails(props) {
 
   return (
     <div>
-      <div className={classes.header}>
-        <div style={{ flex: "1 1 auto" }}>EXERCÍCIO</div>
-        <div style={{ width: "50px", textAlign: "right", padding: "0 5px" }}>
-          SETS
-        </div>
-        <div style={{ width: "70px", textAlign: "right" }}>REPS</div>
-      </div>
       <ul className={classes.list}>
-        <div style={{ paddingTop: "35px" }} />
+        <div className={classes.header}>
+          <div style={{ flex: "1 1 auto" }}>EXERCÍCIO</div>
+          <div style={{ width: "50px", textAlign: "right", padding: "0 5px" }}>
+            SETS
+          </div>
+          <div style={{ width: "70px", textAlign: "right" }}>REPS</div>
+        </div>
         {props.workout.exercises
           .filter((exercise) => !exercise.is_paused)
           .map((exercise) => (
@@ -347,32 +346,32 @@ export default function WorkoutDetails(props) {
               alteredLoads={alteredLoads ?? []}
             />
           ))}
-        {isLive ? (
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <button
-              className={classes.finalize}
-              onClick={() => setIsFinalizeWorkoutDialogOpen(true)}
-            >
-              finalizar treino
-            </button>
-            <button
-              className={classes.cancel}
-              onClick={() => setIsCancelWorkoutDialogOpen(true)}
-            >
-              cancelar treino
-            </button>
-          </div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <button
-              className={classes.start}
-              onClick={() => startCancelWorkout(true)}
-            >
-              {isStartButtonLoading ? "..." : "iniciar treino"}
-            </button>
-          </div>
-        )}
       </ul>
+      {isLive ? (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <button
+            className={classes.finalize}
+            onClick={() => setIsFinalizeWorkoutDialogOpen(true)}
+          >
+            finalizar treino
+          </button>
+          <button
+            className={classes.cancel}
+            onClick={() => setIsCancelWorkoutDialogOpen(true)}
+          >
+            cancelar treino
+          </button>
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <button
+            className={classes.start}
+            onClick={() => startCancelWorkout(true)}
+          >
+            {isStartButtonLoading ? "..." : "iniciar treino"}
+          </button>
+        </div>
+      )}
       <ChangeLoadDialog />
       <FinalizeWorkoutDialog />
       <CancelWorkoutDialog />

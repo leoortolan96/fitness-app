@@ -132,17 +132,16 @@ function AddEditWorkoutPage() {
       />
       {editWorkoutCtx.editedWorkout != null ? (
         <div>
-          <div className={classes.header}>
-            <div style={{ flex: "1 1 auto" }}>EXERCÍCIO</div>
-            <div
-              style={{ width: "50px", textAlign: "right", padding: "0 5px" }}
-            >
-              SETS
-            </div>
-            <div style={{ width: "70px", textAlign: "right" }}>REPS</div>
-          </div>
           <ul className={classes.list}>
-            <div style={{ paddingTop: "35px" }} />
+            <div className={classes.header}>
+              <div style={{ flex: "1 1 auto" }}>EXERCÍCIO</div>
+              <div
+                style={{ width: "50px", textAlign: "right", padding: "0 5px" }}
+              >
+                SETS
+              </div>
+              <div style={{ width: "70px", textAlign: "right" }}>REPS</div>
+            </div>
             {editWorkoutCtx.editedWorkout.exercises.map((exercise, index) => (
               <ExerciseItemEditMode
                 key={index}
@@ -155,18 +154,18 @@ function AddEditWorkoutPage() {
                 }}
               />
             ))}
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <button
-                className={classes.add_exercise}
-                onClick={() => {
-                  editWorkoutCtx.setExerciseIsPaused(false);
-                  navigate("/edit-exercise/");
-                }}
-              >
-                adicionar exercício
-              </button>
-            </div>
           </ul>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <button
+              className={classes.add_exercise}
+              onClick={() => {
+                editWorkoutCtx.setExerciseIsPaused(false);
+                navigate("/edit-exercise/");
+              }}
+            >
+              adicionar exercício
+            </button>
+          </div>
           <form
             id="workout-form"
             className={classes.form}

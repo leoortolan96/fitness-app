@@ -42,3 +42,23 @@
   margin-bottom: 2px;
   text-decoration: line-through;
 }
+
+.paused {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+}
+
+.paused h4 {
+  text-align: center;
+  color: var(--light);
+  margin: 0;
+  font-size: 18px;
+  font-weight: 400;
+}

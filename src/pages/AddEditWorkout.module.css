@@ -1,10 +1,10 @@
 @import "/src/shared/colors.css";
 
 .header {
-  position: fixed;
+  position: sticky;
   height: 35px;
   width: 100%;
-  top: 60;
+  top: 60px;
   left: 0;
   background-color: var(--light);
   padding: 0 10px;
@@ -13,6 +13,7 @@
   display: flex;
   color: var(--neutralLight);
   font-size: 15px;
+  z-index: 9;
 }
 
 .add_exercise,
