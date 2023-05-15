@@ -96,3 +96,13 @@
   color: var(--neutralMedium);
   font-size: 16px;
 }
+
+.loading {
+  width: 80%;
+  color: var(--neutralLight);
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

@@ -236,9 +236,7 @@ function AddEditWorkoutPage() {
           </div>
         </div>
       ) : (
-        <section>
-          <p>Loading...</p>
-        </section>
+        <div className={classes.loading}>Loading...</div>
       )}
       <ConfirmDialog
         show={isDeleteDialogOpen}

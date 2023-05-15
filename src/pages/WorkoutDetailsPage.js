@@ -141,21 +141,13 @@ function WorkoutDetailsPage() {
         }
       />
       {isLoading ? (
-        <section>
-          <p>Loading...</p>
-        </section>
+        <div className={classes.loading}>Loading...</div>
       ) : errorMessage ? (
-        <section>
-          <p>{errorMessage}</p>
-        </section>
+        <div className={classes.loading}>{errorMessage}</div>
       ) : !loadedWorkout ? (
-        <section>
-          <p>"Nenhum treino para mostrar..."</p>
-        </section>
+        <div className={classes.loading}>Nenhum treino para mostrar...</div>
       ) : (
-        <section>
-          <WorkoutDetails workout={loadedWorkout} />
-        </section>
+        <WorkoutDetails workout={loadedWorkout} />
       )}
     </div>
   );
