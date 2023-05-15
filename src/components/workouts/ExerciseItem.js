@@ -40,26 +40,34 @@ export function ExerciseItem(props) {
 
 export function ExerciseItemEditMode(props) {
   return (
-    <li className={classes.item} onClick={props.onClick}>
-      <div style={{ display: "flex" }}>
-        <h1 style={{ flex: "1 1 auto" }}>{props.exercise.name}</h1>
-        <h3
-          style={{
-            width: "50px",
-            textAlign: "right",
-            flex: "0 0 auto",
-            padding: "0 5px",
-          }}
-        >
-          {props.exercise.sets}
-        </h3>
-        <h3 style={{ width: "70px", textAlign: "right", flex: "0 0 auto" }}>
-          {props.exercise.reps}
-        </h3>
+    <li style={{ position: "relative" }} onClick={props.onClick}>
+      <div className={classes.item}>
+        <div style={{ display: "flex" }}>
+          <h1 style={{ flex: "1 1 auto" }}>{props.exercise.name}</h1>
+          <h3
+            style={{
+              width: "50px",
+              textAlign: "right",
+              flex: "0 0 auto",
+              padding: "0 5px",
+            }}
+          >
+            {props.exercise.sets}
+          </h3>
+          <h3 style={{ width: "70px", textAlign: "right", flex: "0 0 auto" }}>
+            {props.exercise.reps}
+          </h3>
+        </div>
+        <h4>{props.exercise.load ?? ""}</h4>
+        <h4>{props.exercise.observation ?? " "}</h4>
       </div>
-      <h4>{props.exercise.load ?? ""}</h4>
-      <h4>{props.exercise.observation ?? " "}</h4>
-      {props.exercise.is_paused ? <h4>PAUSADO</h4> : <></>}
+      {props.exercise.is_paused ? (
+        <div className={classes.paused}>
+          <h4>PAUSADO</h4>
+        </div>
+      ) : (
+        <></>
+      )}
     </li>
   );
 }
