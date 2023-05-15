@@ -50,15 +50,12 @@
   right: 0;
   bottom: 0;
   align-items: center;
-  justify-items: center;
+  justify-content: center;
   background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
 }
 
 .paused h4 {
-  top: 50%;
-  left: 50%;
-  position: absolute;
-  transform: translate(-50%, -50%);
   text-align: center;
   color: var(--light);
   margin: 0;
