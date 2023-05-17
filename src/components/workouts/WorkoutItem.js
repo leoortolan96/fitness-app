@@ -1,9 +1,23 @@
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LiveWorkoutContext from "../../store/live-workout-context";
 import Card from "../ui/Card";
 import classes from "./WorkoutItem.module.css";
 
 export default function WorkoutItem(props) {
   const navigate = useNavigate();
+  const liveWorkoutCtx = useContext(LiveWorkoutContext);
+  const [isAnimationExpanded, setIsAnimationExpanded] = useState(false);
+
+  if (
+    liveWorkoutCtx.liveWorkout != null &&
+    liveWorkoutCtx.liveWorkout._id === props.workout._id
+  )
+    setTimeout(
+      () => setIsAnimationExpanded(!isAnimationExpanded),
+      isAnimationExpanded ? 3000 : 1
+    );
+
   var startDateString = "---";
   var endDateString = "---";
   var workoutsCount = props.workout.workout_sessions.length;
@@ -41,19 +55,42 @@ export default function WorkoutItem(props) {
         <div className={classes.content}>
           <h3>{props.workout.name}</h3>
           <p>{props.workout.description ?? " "}</p>
-          <div style={{ display: "flex", padding: "10px 0", alignItems:"center"}}>
-            {props.workout.is_active ? (
+          <div
+            style={{
+              display: "flex",
+              padding: "10px 0",
+              marginLeft: "-4px",
+              alignItems: "center",
+            }}
+          >
+            {liveWorkoutCtx.liveWorkout != null &&
+            liveWorkoutCtx.liveWorkout._id === props.workout._id ? (
               <>
-                <div className={classes.active}></div>
+                <div className={classes.status_box}>
+                  <div
+                    className={
+                      isAnimationExpanded ? classes.live : classes.active
+                    }
+                  ></div>
+                </div>
+                <div className={classes.active_label}>EM ANDAMENTO</div>
+              </>
+            ) : props.workout.is_active ? (
+              <>
+                <div className={classes.status_box}>
+                  <div className={classes.active}></div>
+                </div>
                 <div className={classes.active_label}>ATIVO</div>
               </>
             ) : (
               <>
-                <div className={classes.archived}></div>
+                <div className={classes.status_box}>
+                  <div className={classes.archived}></div>
+                </div>
                 <div className={classes.archived_label}>ARQUIVADO</div>
               </>
             )}
-            <p style={{ marginLeft: "15px" }}>{workoutsCount}x</p>
+            <div className={classes.sessions_counter}>{workoutsCount}x</div>
           </div>
 
           <p>PRIMEIRO: {startDateString}</p>

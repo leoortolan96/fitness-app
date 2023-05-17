@@ -23,8 +23,12 @@
 .archived_label {
   font-size: 16px;
   font-weight: 400;
-  margin: 6px 0 0 0;
+  margin: 3px 0 0 0;
   color: var(--neutralMedium);
+}
+
+.content p {
+  margin: 6px 0 0 0;
 }
 
 .active_label {
@@ -36,12 +40,12 @@
 }
 
 .active,
-.archived {
+.archived,
+.live {
   height: 8px;
   width: 8px;
   display: flex;
   border-radius: 50%;
-  margin: 3px 4px 0 0;
 }
 
 .active {
@@ -50,4 +54,31 @@
 
 .archived {
   background-color: var(--neutralLight);
+}
+
+.live {
+  transition: all 3s;
+  transition-timing-function: linear;
+  opacity: 0.1;
+  background-color: var(--icons);
+  height: 16px;
+  width: 16px;
+}
+
+.status_box {
+  width: 20px;
+  height: 19px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sessions_counter {
+  font-size: 12px;
+  font-weight: 400;
+  margin: 0 0 0 15px;
+  padding: 1px 3px;
+  border-radius: 3px;
+  color: var(--neutralMedium);
+  background-color: var(--neutralUltralight);
 }
