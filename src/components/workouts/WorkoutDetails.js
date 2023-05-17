@@ -1,13 +1,13 @@
 import { useSnackbar } from "notistack";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { ExerciseItem, ExerciseItemAlteredLoads } from "./ExerciseItem";
 import classes from "./WorkoutDetails.module.css";
 import { CgClose } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import ConfirmDialog from "../ui/ConfirmDialog";
+import LiveWorkoutContext from "../../store/live-workout-context";
 
 export default function WorkoutDetails(props) {
-  const [isLive, setIsLive] = useState(props.workout.is_live);
   const [isStartButtonLoading, setIsStartButtonLoading] = useState(false);
   const [isFinalizeButtonLoading, setIsFinalizeButtonLoading] = useState(false);
   const [isCancelButtonLoading, setIsCancelButtonLoading] = useState(false);
@@ -20,6 +20,7 @@ export default function WorkoutDetails(props) {
   const [alteredLoads, setAlteredLoads] = useState();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const liveWorkoutCtx = useContext(LiveWorkoutContext);
 
   setTimeout(() => {
     if (alteredLoads == null)
@@ -47,7 +48,6 @@ export default function WorkoutDetails(props) {
       result = await result.json();
       if (result.status === 500) throw result.message;
       props.workout.is_live = isStarting;
-      setIsLive(isStarting);
       if (isStarting) {
         localStorage.setItem(
           "live_workout_initial",
@@ -120,7 +120,6 @@ export default function WorkoutDetails(props) {
       result = await result.json();
       if (result.status === 500) throw Error("Error finalizing workout!");
       props.workout.is_live = false;
-      setIsLive(false);
       localStorage.removeItem("live_workout_initial");
       localStorage.removeItem("live_workout_start");
       localStorage.removeItem("altered_loads");
@@ -339,7 +338,11 @@ export default function WorkoutDetails(props) {
               key={exercise._id}
               exercise={exercise}
               onClick={() => {
-                if (!isLive) return;
+                if (
+                  liveWorkoutCtx.liveWorkout == null ||
+                  liveWorkoutCtx.liveWorkout._id !== props.workout._id
+                )
+                  return;
                 setSelectedExercise(exercise);
                 setIsLoadDialogOpen(true);
               }}
@@ -347,7 +350,8 @@ export default function WorkoutDetails(props) {
             />
           ))}
       </ul>
-      {isLive ? (
+      {liveWorkoutCtx.liveWorkout != null &&
+      liveWorkoutCtx.liveWorkout._id === props.workout._id ? (
         <div style={{ display: "flex", flexDirection: "column" }}>
           <button
             className={classes.finalize}

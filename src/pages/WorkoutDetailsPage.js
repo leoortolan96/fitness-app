@@ -6,6 +6,7 @@ import WorkoutDetails from "../components/workouts/WorkoutDetails";
 import classes from "./WorkoutDetailsPage.module.css";
 import { FaEdit } from "react-icons/fa";
 import EditWorkoutContext from "../store/edit-workout-context";
+import LiveWorkoutContext from "../store/live-workout-context";
 
 // const DUMMY_DATA =
 //   {
@@ -81,6 +82,7 @@ function WorkoutDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const editWorkoutCtx = useContext(EditWorkoutContext);
+  const liveWorkoutCtx = useContext(LiveWorkoutContext);
 
   useEffect(() => {
     async function fetchData() {
@@ -124,18 +126,20 @@ function WorkoutDetailsPage() {
         title={loadedWorkout?.name}
         showBackButton={true}
         actionIcon={
-          loadedWorkout && !loadedWorkout.is_live ? <FaEdit size={20} /> : null
+          liveWorkoutCtx.liveWorkout == null ||
+          liveWorkoutCtx.liveWorkout._id !== loadedWorkout._id ? (
+            <FaEdit size={20} />
+          ) : null
         }
         action={
-          loadedWorkout && !loadedWorkout.is_live
+          liveWorkoutCtx.liveWorkout == null ||
+          liveWorkoutCtx.liveWorkout._id !== loadedWorkout._id
             ? () => {
-                if (!loadedWorkout.is_live) {
-                  editWorkoutCtx.setEditedWorkout(loadedWorkout);
-                  editWorkoutCtx.setWorkoutIsActive(loadedWorkout.is_active);
-                  navigate("/edit-workout/", {
-                    state: { originalWorkout: loadedWorkout },
-                  });
-                }
+                editWorkoutCtx.setEditedWorkout(loadedWorkout);
+                editWorkoutCtx.setWorkoutIsActive(loadedWorkout.is_active);
+                navigate("/edit-workout/", {
+                  state: { originalWorkout: loadedWorkout },
+                });
               }
             : null
         }
