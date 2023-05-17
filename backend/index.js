@@ -1,5 +1,5 @@
-// To connect with your mongoDB database
 const mongoose = require("mongoose");
+const port = 5000;
 
 mongoose
   .connect(
@@ -17,9 +17,10 @@ mongoose
 // For backend and express
 const express = require("express");
 const app = express();
+var expressWs = require("express-ws")(app);
 const cors = require("cors");
 const { getWorkoutModel } = require("./models");
-console.log("App listen at port 5000");
+console.log("App listen at port " + port);
 app.use(express.json());
 app.use(cors());
 app.get("/", (req, resp) => {
@@ -200,4 +201,67 @@ app.post("/delete-workout", async (req, resp) => {
   }
 });
 
-app.listen(5000);
+// let clients = {};
+
+// // This code generates unique userid for everyuser.
+// const getUniqueID = () => {
+//   const s4 = () =>
+//     Math.floor((1 + Math.random()) * 0x10000)
+//       .toString(16)
+//       .substring(1);
+//   return s4() + s4() + "-" + s4();
+// };
+
+app.ws("/", function (ws, req) {
+  ws.on("message", async function (msg) {
+    msg = JSON.parse(msg);
+
+    if (msg.type == "connect") {
+      function sendKeepAlive() {
+        ws.send(
+          JSON.stringify({
+            type: "ka",
+          })
+        );
+        setTimeout(() => sendKeepAlive(), 5000);
+      }
+      setTimeout(() => sendKeepAlive(), 5000);
+    }
+
+    if (msg.type == "start" && msg.payload == "live_workout") {
+      // Performs a query and sends the result to the client
+      let doc = await Workout.findOne({ is_live: true }).exec();
+      ws.send(
+        JSON.stringify({
+          type: "data",
+          payload: "live_workout",
+          data: doc,
+        })
+      );
+      // Sets up the change stream
+      const pipeline = [
+        {
+          $match: {
+            "updateDescription.updatedFields.is_live": { $exists: true },
+          },
+        },
+      ];
+      let stream = Workout.watch(pipeline, { fullDocument: "updateLookup" });
+      stream.on("change", (data) => {
+        // console.log(JSON.stringify(data));
+        ws.send(
+          JSON.stringify({
+            type: "data",
+            payload: "live_workout",
+            data: data.fullDocument,
+          })
+        );
+      });
+    }
+  });
+});
+
+app.listen(port);
+
+// WEBSOCKET TUTORIAL ---------------------
+// https://www.youtube.com/watch?v=LenNpb5zqGE
