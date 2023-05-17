@@ -23,7 +23,7 @@
 .archived_label {
   font-size: 16px;
   font-weight: 400;
-  margin: 3px 0 0 0;
+  margin: 0;
   color: var(--neutralMedium);
 }
 
