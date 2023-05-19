@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import AddEditExercisePage from "./pages/AddEditExercise";
 import AddEditWorkoutPage from "./pages/AddEditWorkout";
@@ -23,6 +23,7 @@ function App() {
         <Route path="/meetups" element={<AllMeetupsPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
         <Route path="/new-meetup" element={<NewMeetupPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Layout>
   );
