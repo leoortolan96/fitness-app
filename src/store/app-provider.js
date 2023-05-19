@@ -3,6 +3,7 @@ import { EditWorkoutContextProvider } from "./edit-workout-context";
 import { LayoutContextProvider } from "./layout-context";
 import { LiveWorkoutContextProvider } from "./live-workout-context";
 import { NavigationContextProvider } from "./navigation-context";
+import { WebsocketContextProvider } from "./websocket-context";
 
 export default function AppProvider(props) {
   return (
@@ -11,7 +12,9 @@ export default function AppProvider(props) {
         <LayoutContextProvider>
           <EditWorkoutContextProvider>
             <LiveWorkoutContextProvider>
-              {props.children}
+              <WebsocketContextProvider>
+                {props.children}
+              </WebsocketContextProvider>
             </LiveWorkoutContextProvider>
           </EditWorkoutContextProvider>
         </LayoutContextProvider>
