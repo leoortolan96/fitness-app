@@ -23,7 +23,7 @@ function App() {
         <Route path="/meetups" element={<AllMeetupsPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
         <Route path="/new-meetup" element={<NewMeetupPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/*" element={<Navigate to="/" replace />} />
       </Routes>
     </Layout>
   );
