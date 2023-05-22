@@ -6,6 +6,7 @@ import { CgClose } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import LiveWorkoutContext from "../../store/live-workout-context";
+import { useGoBackOrHome } from "../../shared/functions";
 
 export default function WorkoutDetails(props) {
   const [isStartButtonLoading, setIsStartButtonLoading] = useState(false);
@@ -20,6 +21,7 @@ export default function WorkoutDetails(props) {
   const [alteredLoads, setAlteredLoads] = useState();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const navigator = useGoBackOrHome();
   const liveWorkoutCtx = useContext(LiveWorkoutContext);
 
   setTimeout(() => {
@@ -128,7 +130,7 @@ export default function WorkoutDetails(props) {
       // console.log("current:\n" + localStorage.getItem("altered_loads"));
       const path = window.location.pathname;
       if (path === "/live-workout") navigate("/");
-      else if (path.startsWith("/workout/")) navigate(-1);
+      else if (path.startsWith("/workout/")) navigator.goBackOrHome();
     } catch (error) {
       console.log(error);
       enqueueSnackbar(

@@ -1,17 +1,18 @@
 import { useSnackbar } from "notistack";
 import { useContext, useState } from "react";
 import classes from "./AddEditExercise.module.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import AppBar from "../components/layout/AppBar";
 import { useRef } from "react";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import EditWorkoutContext from "../store/edit-workout-context";
 import Switch from "react-switch";
+import { useGoBackOrHome } from "../shared/functions";
 
 function AddEditExercisePage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState();
   const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
+  const navigator = useGoBackOrHome();
   const editWorkoutCtx = useContext(EditWorkoutContext);
 
   const nameInputRef = useRef();
@@ -43,7 +44,7 @@ function AddEditExercisePage() {
         editedWorkout.exercises[exerciseIndex] = editedExercise;
       else editedWorkout.exercises.push(editedExercise);
       editWorkoutCtx.setEditedWorkout(editedWorkout);
-      navigate(-1);
+      navigator.goBackOrHome();
     } catch (error) {
       console.log(error);
       enqueueSnackbar(
@@ -67,7 +68,7 @@ function AddEditExercisePage() {
       editedWorkout.exercises.splice(exerciseIndex, 1);
       editWorkoutCtx.setEditedWorkout(editedWorkout);
       setIsDeleteDialogOpen(false);
-      navigate(-1);
+      navigator.goBackOrHome();
     } catch (error) {
       console.log(error);
       enqueueSnackbar(

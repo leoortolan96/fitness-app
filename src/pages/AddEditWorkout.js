@@ -8,11 +8,13 @@ import { useRef } from "react";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import EditWorkoutContext from "../store/edit-workout-context";
 import Switch from "react-switch";
+import { useGoBackOrHome } from "../shared/functions";
 
 function AddEditWorkoutPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const navigator = useGoBackOrHome();
   const [isSaveButtonLoading, setIsSaveButtonLoading] = useState(false);
   const [isDeleteButtonLoading, setIsDeleteButtonLoading] = useState(false);
   const editWorkoutCtx = useContext(EditWorkoutContext);
@@ -62,7 +64,7 @@ function AddEditWorkoutPage() {
       );
       result = await result.json();
       if (result.status === 500) throw Error("Error editing workout!");
-      navigate(-1);
+      navigator.goBackOrHome();
     } catch (error) {
       console.log(error);
       enqueueSnackbar(
@@ -101,10 +103,10 @@ function AddEditWorkoutPage() {
       result = await result.json();
       if (result.status === 500) throw Error("Error deleting workout!");
       setIsDeleteDialogOpen(false);
-      navigate(-1);
+      navigator.goBackOrHome();
       setTimeout(() => {
         if (window.location.pathname.startsWith("/workout/" + result.id))
-          navigate(-1);
+          navigator.goBackOrHome();
       }, 20);
     } catch (error) {
       console.log(error);
