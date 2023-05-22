@@ -1,14 +1,14 @@
-import { useNavigate } from "react-router-dom";
 import classes from "./AppBar.module.css";
 import { IoIosArrowBack } from "react-icons/io";
+import { useGoBackOrHome } from "../../shared/functions";
 
 function AppBar(props) {
-  const navigate = useNavigate();
+  const navigator = useGoBackOrHome();
   return (
     <header className={classes.header}>
       <div className={classes.button_box}>
         {props.showBackButton ? (
-          <button onClick={() => navigate(-1)}>
+          <button onClick={() => navigator.goBackOrHome()}>
             <IoIosArrowBack size={26} />
           </button>
         ) : (
