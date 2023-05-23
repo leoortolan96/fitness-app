@@ -213,9 +213,16 @@ app.post("/delete-workout", async (req, resp) => {
 // };
 
 app.ws("/", function (ws, req) {
+  let timer;
+  let liveWorkoutStream;
+
+  function closeConnection() {
+    liveWorkoutStream.close();
+    ws.close();
+  }
+
   ws.on("message", async function (msg) {
     msg = JSON.parse(msg);
-    let timer;
 
     if (msg.type == "connect") {
       function sendKeepAlive() {
@@ -227,12 +234,12 @@ app.ws("/", function (ws, req) {
         setTimeout(() => sendKeepAlive(), 5000);
       }
       setTimeout(() => sendKeepAlive(), 5000);
-      // timer = setTimeout(() => ws.close(), 10 * 60000); //TODO 10min
+      timer = setTimeout(() => closeConnection(), 10 * 60000); //TODO 10min
     }
 
     if (msg.type == "disconnect") {
       timer?.clearTimeout();
-      ws.close();
+      closeConnection();
     }
 
     if (msg.type == "start" && msg.payload == "live_workout") {
@@ -253,8 +260,10 @@ app.ws("/", function (ws, req) {
           },
         },
       ];
-      let stream = Workout.watch(pipeline, { fullDocument: "updateLookup" });
-      stream.on("change", (data) => {
+      liveWorkoutStream = Workout.watch(pipeline, {
+        fullDocument: "updateLookup",
+      });
+      liveWorkoutStream.on("change", (data) => {
         // console.log(JSON.stringify(data));
         ws.send(
           JSON.stringify({
