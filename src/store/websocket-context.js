@@ -15,14 +15,13 @@ export function WebsocketContextProvider(props) {
     _setClient(data);
   };
   const liveWorkoutCtx = useContext(LiveWorkoutContext);
-  console.log("rodou o websocket context provider");
 
   function setNewClientHandler() {
-    console.log(`[${new Date()}]  executando setNewClient()`);
+    // console.log(`[${new Date()}]  executando setNewClient()`);
     let newClient = new W3cwebsocket(process.env.REACT_APP_API_WEBSOCKET);
 
     newClient.onopen = () => {
-      console.log("Websocket Client Connected!");
+      // console.log("Websocket Client Connected!");
       setClient(newClient);
       newClient.send(
         JSON.stringify({
@@ -41,18 +40,13 @@ export function WebsocketContextProvider(props) {
       // console.log("message received:\n" + message.data);
       const data = JSON.parse(message.data);
       if (data.type === "data" && data.payload === "live_workout") {
-        console.log("condicao foi atendida");
         liveWorkoutCtx.setLiveWorkout(data.data?.is_live ? data.data : null);
       }
     };
 
     newClient.onclose = () => {
-      console.log(`[${new Date()}]  On Close do Websocket`);
-      console.log(
-        "onClose client: " + (!clientRef.current ? "nenhum" : clientRef.current)
-      );
+      // console.log(`[${new Date()}]  On Close do Websocket`);
       if (clientRef.current) {
-        console.log("setando client para null");
         setClient(null);
       }
     };
@@ -60,16 +54,8 @@ export function WebsocketContextProvider(props) {
   }
 
   useEffect(() => {
-    console.log("rodou o useEffect");
     function visibilityChangeHandler() {
-      console.log(
-        `[${new Date()}]  mudou visibilidade para: ${document.visibilityState}`
-      );
       if (document.visibilityState === "visible") {
-        console.log(
-          "listener client: " +
-            (!clientRef.current ? "nenhum" : clientRef.current)
-        );
         if (!clientRef.current) setNewClientHandler();
       }
     }
@@ -78,13 +64,7 @@ export function WebsocketContextProvider(props) {
   }, []);
 
   useEffect(() => {
-    console.log(
-      "antes client: " + (!clientRef.current ? "nenhum" : clientRef.current)
-    );
     if (!clientRef.current) setNewClientHandler();
-    console.log(
-      "depois client: " + (!clientRef.current ? "nenhum" : clientRef.current)
-    );
     // eslint-disable-next-line
   }, [client]);
 
