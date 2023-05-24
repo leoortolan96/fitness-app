@@ -34,9 +34,9 @@ app.get("/", (req, resp) => {
 
 const Workout = getWorkoutModel(mongoose);
 
-app.get("/workouts", async (req, resp) => {
+app.get("/workouts/:userId", async (req, resp) => {
   try {
-    var docs = await Workout.find();
+    var docs = await Workout.find({ user_id: req.params.userId });
     // console.log("docs:\n" + docs);
     resp.json({ workouts: docs });
   } catch (e) {
@@ -54,15 +54,15 @@ app.get("/workout/:id", async (req, resp) => {
   }
 });
 
-app.get("/live-workout", async (req, resp) => {
-  try {
-    var doc = await Workout.findOne({ is_live: true }).exec();
-    // console.log("doc:\n" + doc);
-    resp.json({ workout: doc });
-  } catch (e) {
-    resp.send("Error fetching workout!");
-  }
-});
+// app.get("/live-workout", async (req, resp) => {
+//   try {
+//     var doc = await Workout.findOne({ is_live: true }).exec();
+//     // console.log("doc:\n" + doc);
+//     resp.json({ workout: doc });
+//   } catch (e) {
+//     resp.send("Error fetching workout!");
+//   }
+// });
 
 app.post("/start-cancel-workout", async (req, resp) => {
   try {
@@ -72,6 +72,9 @@ app.post("/start-cancel-workout", async (req, resp) => {
           $match: {
             is_live: {
               $eq: true,
+            },
+            user_id: {
+              $eq: req.body.user_id,
             },
           },
         },
@@ -133,6 +136,7 @@ app.post("/add-workout", async (req, resp) => {
       throw Error("Error: Unexpected null value");
     var workout = new Workout({
       name: req.body.name,
+      user_id: req.body.user_id,
       description: req.body.description,
       is_active: req.body.is_active,
       exercises: JSON.parse(req.body.exercises),
@@ -215,8 +219,10 @@ app.post("/delete-workout", async (req, resp) => {
 app.ws("/", function (ws, req) {
   let timer;
   let liveWorkoutStream;
+  let userId;
 
   function closeConnection() {
+    if (timer) clearTimeout(timer);
     liveWorkoutStream.close();
     ws.close();
   }
@@ -233,18 +239,21 @@ app.ws("/", function (ws, req) {
         );
         setTimeout(() => sendKeepAlive(), 5000);
       }
+      userId = msg.user_id;
       setTimeout(() => sendKeepAlive(), 5000);
-      timer = setTimeout(() => closeConnection(), 10 * 60000); //TODO 10min
+      timer = setTimeout(() => closeConnection(), 10 * 60000); //10min
     }
 
     if (msg.type == "disconnect") {
-      timer?.clearTimeout();
       closeConnection();
     }
 
     if (msg.type == "start" && msg.payload == "live_workout") {
       // Performs a query and sends the result to the client
-      let doc = await Workout.findOne({ is_live: true }).exec();
+      let doc = await Workout.findOne({
+        is_live: true,
+        user_id: userId,
+      }).exec();
       ws.send(
         JSON.stringify({
           type: "data",
@@ -257,6 +266,7 @@ app.ws("/", function (ws, req) {
         {
           $match: {
             "updateDescription.updatedFields.is_live": { $exists: true },
+            "fullDocument.user_id": { $eq: userId },
           },
         },
       ];

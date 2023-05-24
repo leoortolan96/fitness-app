@@ -7,6 +7,7 @@ import classes from "./MyWorkouts.module.css";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import EditWorkoutContext from "../store/edit-workout-context";
+import AuthContext from "../store/auth-context";
 
 // const DUMMY_DATA = [
 //   {
@@ -82,56 +83,36 @@ function MyWorkoutsPage() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const editWorkoutCtx = useContext(EditWorkoutContext);
+  const authCtx = useContext(AuthContext);
 
   useEffect(() => {
-    // setIsLoading(true);
-    // fetch(
-    //   "https://react-course-43389-default-rtdb.firebaseio.comm/meetupss.json"
-    // )
-    //   .then((response) => {
-    //     console.log(response.ok);
-    //     if (!response.ok) {
-    //       throw Error("Failed to fetch resource - tretaa");
-    //     }
-    //     return response.json();
-    //   })
-    //   .then((data) => {
-    //     const meetups = [];
-    //     for (const key in data) {
-    //       const meetup = {
-    //         id: key,
-    //         ...data[key],
-    //       };
-    //       meetups.push(meetup);
-    //     }
-    //     setFavoriteMeetupsFromStorage(meetups);
-    //     setLoadedMeetups(meetups);
-    //     setIsLoading(false);
-    //   })
-    //   .catch((err) => console.log(err, "aaaaaaaa"));
-
-    // usando async await
     async function fetchData() {
       try {
-        setIsLoading(true);
-        const response = await fetch(
-          process.env.REACT_APP_API_ENDPOINT + "/workouts"
-        );
-        if (!response.ok) {
-          throw Error("Failed to fetch resource");
+        if (!authCtx.user) {
+          setLoadedWorkouts([]);
+          setErrorMessage(null);
+        } else {
+          setIsLoading(true);
+          let userId = authCtx.user.sub.split("|")[1];
+          const response = await fetch(
+            process.env.REACT_APP_API_ENDPOINT + "/workouts/" + userId
+          );
+          if (!response.ok) {
+            throw Error("Failed to fetch resource");
+          }
+          const data = await response.json();
+          var workouts = [];
+          for (const key in data["workouts"]) {
+            const workout = {
+              id: data["workouts"][key]["_id"],
+              ...data["workouts"][key],
+            };
+            workouts.push(workout);
+          }
+          // setLoadedWorkouts(DUMMY_DATA);
+          setLoadedWorkouts(workouts);
+          setErrorMessage(null);
         }
-        const data = await response.json();
-        var workouts = [];
-        for (const key in data["workouts"]) {
-          const workout = {
-            id: data["workouts"][key]["_id"],
-            ...data["workouts"][key],
-          };
-          workouts.push(workout);
-        }
-        // setLoadedWorkouts(DUMMY_DATA);
-        setLoadedWorkouts(workouts);
-        setErrorMessage(null);
       } catch (error) {
         setErrorMessage("Error fetching workouts!");
         console.log(error);
@@ -152,7 +133,7 @@ function MyWorkoutsPage() {
     }
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [authCtx.user]);
 
   return (
     <div>
@@ -168,7 +149,9 @@ function MyWorkoutsPage() {
       />
       <div className={classes.page}>
         <div className={classes.list}>
-          {isLoading ? (
+          {!authCtx.isAuthenticated && !authCtx.isLoading ? (
+            <div className={classes.loading}>Faça login para continuar...</div>
+          ) : isLoading || authCtx.isLoading ? (
             <div className={classes.loading}>Loading...</div>
           ) : errorMessage ? (
             <div className={classes.loading}>{errorMessage}</div>

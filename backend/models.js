@@ -1,10 +1,9 @@
-
-
 module.exports = {
   getWorkoutModel: (mongoose) => {
     var WorkoutSchema = new mongoose.Schema(
       {
         name: String,
+        user_id: String,
         description: String, //nullable
         is_active: { type: Boolean, default: true },
         is_live: { type: Boolean, default: false },
@@ -35,7 +34,7 @@ module.exports = {
             ],
           },
         ],
-      },
+      }
       // { collection: "workouts" }
     );
     var WorkoutModel = mongoose.model("Workout", WorkoutSchema);
