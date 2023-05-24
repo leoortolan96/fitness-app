@@ -9,6 +9,7 @@ import ConfirmDialog from "../components/ui/ConfirmDialog";
 import EditWorkoutContext from "../store/edit-workout-context";
 import Switch from "react-switch";
 import { useGoBackOrHome } from "../shared/functions";
+import AuthContext from "../store/auth-context";
 
 function AddEditWorkoutPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState();
@@ -21,6 +22,7 @@ function AddEditWorkoutPage() {
   const location = useLocation();
   const nameInputRef = useRef();
   const descriptionInputRef = useRef();
+  const authCtx = useContext(AuthContext);
 
   let originalWorkout = location?.state?.originalWorkout;
 
@@ -29,6 +31,7 @@ function AddEditWorkoutPage() {
       event.preventDefault();
       setIsSaveButtonLoading(true);
       // await new Promise(resolve => setTimeout(resolve, 2000));
+      if (!authCtx.user) throw Error("Error: unauthorized!");
       let enteredName = nameInputRef.current.value.trim();
       let enteredDescription = descriptionInputRef.current.value.trim();
       if (enteredDescription === "") enteredDescription = null;
@@ -44,6 +47,7 @@ function AddEditWorkoutPage() {
           is_paused: exercise.is_paused,
         };
       });
+      let userId = authCtx.user.sub.split("|")[1];
 
       let result = await fetch(
         process.env.REACT_APP_API_ENDPOINT +
@@ -53,6 +57,7 @@ function AddEditWorkoutPage() {
           body: JSON.stringify({
             id: originalWorkout?._id,
             name: enteredName.trim(),
+            user_id: userId,
             description: enteredDescription,
             is_active: enteredWorkoutIsActive,
             exercises: JSON.stringify(exercises),

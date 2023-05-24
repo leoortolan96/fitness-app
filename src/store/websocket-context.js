@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { w3cwebsocket as W3cwebsocket } from "websocket";
+import AuthContext from "./auth-context";
 import LiveWorkoutContext from "./live-workout-context";
 
 const WebsocketContext = createContext({
@@ -15,17 +16,21 @@ export function WebsocketContextProvider(props) {
     _setClient(data);
   };
   const liveWorkoutCtx = useContext(LiveWorkoutContext);
+  const authCtx = useContext(AuthContext);
 
   function setNewClientHandler() {
+    if (!authCtx.user) return;
     // console.log(`[${new Date()}]  executando setNewClient()`);
     let newClient = new W3cwebsocket(process.env.REACT_APP_API_WEBSOCKET);
 
     newClient.onopen = () => {
       // console.log("Websocket Client Connected!");
       setClient(newClient);
+      let userId = authCtx.user?.sub.split("|")[1];
       newClient.send(
         JSON.stringify({
           type: "connect",
+          user_id: userId,
         })
       );
       newClient.send(
@@ -67,6 +72,17 @@ export function WebsocketContextProvider(props) {
     if (!clientRef.current) setNewClientHandler();
     // eslint-disable-next-line
   }, [client]);
+
+  useEffect(() => {
+    if (clientRef.current)
+      clientRef.current.send(
+        JSON.stringify({
+          type: "disconnect",
+        })
+      );
+    setNewClientHandler();
+    // eslint-disable-next-line
+  }, [authCtx.user]);
 
   const context = {
     client: clientRef.current,

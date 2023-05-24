@@ -1,6 +1,6 @@
 import classes from "./BottomNavBar.module.css";
 import { useNavigate } from "react-router-dom";
-import { TbWeight, TbPlayerPlay, TbChartBar } from "react-icons/tb";
+import { TbWeight, TbPlayerPlay, TbUser } from "react-icons/tb";
 
 export default function BottomNavBar() {
   // const navigationCtx = useContext(NavigationContext);
@@ -21,7 +21,7 @@ export default function BottomNavBar() {
       case 2:
         // console.log("2");
         // navigationCtx.selectIndex(2);
-        navigate("/history");
+        navigate("/profile");
         break;
       default:
         console.log("Invalid index");
@@ -57,11 +57,11 @@ export default function BottomNavBar() {
         <div
           className={
             // navigationCtx.currentIndex === 2
-            path === "/history" ? classes.selectedNavItem : classes.navItem
+            path === "/profile" ? classes.selectedNavItem : classes.navItem
           }
         >
-          <TbChartBar size={24} />
-          <p>HISTÓRICO</p>
+          <TbUser size={24} />
+          <p>PERFIL</p>
         </div>
       </button>
     </footer>

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import LiveWorkoutContext from "../../store/live-workout-context";
 import { useGoBackOrHome } from "../../shared/functions";
+import AuthContext from "../../store/auth-context";
 
 export default function WorkoutDetails(props) {
   const [isStartButtonLoading, setIsStartButtonLoading] = useState(false);
@@ -23,6 +24,7 @@ export default function WorkoutDetails(props) {
   const navigate = useNavigate();
   const navigator = useGoBackOrHome();
   const liveWorkoutCtx = useContext(LiveWorkoutContext);
+  const authCtx = useContext(AuthContext);
 
   setTimeout(() => {
     if (alteredLoads == null)
@@ -36,12 +38,18 @@ export default function WorkoutDetails(props) {
       // e.preventDefault();
       if (isStarting) setIsStartButtonLoading(true);
       else setIsCancelButtonLoading(true);
+      if (!authCtx.user) throw Error("Error: unauthorized!");
       // await new Promise(resolve => setTimeout(resolve, 2000));
+      let userId = authCtx.user.sub.split("|")[1];
       let result = await fetch(
         process.env.REACT_APP_API_ENDPOINT + "/start-cancel-workout",
         {
           method: "post",
-          body: JSON.stringify({ id: props.workout._id, is_live: isStarting }),
+          body: JSON.stringify({
+            id: props.workout._id,
+            is_live: isStarting,
+            user_id: userId,
+          }),
           headers: {
             "Content-Type": "application/json",
           },
