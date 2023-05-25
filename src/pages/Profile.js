@@ -31,7 +31,9 @@ function ProfilePage() {
         show={isLogoutDialogOpen}
         onClose={() => setIsLogoutDialogOpen(false)}
         onConfirm={() =>
-          authCtx.logout({ returnTo: process.env.REACT_APP_HOME_URL })
+          authCtx.logout({
+            logoutParams: { returnTo: process.env.REACT_APP_HOME_URL },
+          })
         }
         title="FAZER LOGOUT"
         text="Tem certeza que deseja sair da sua conta?"
