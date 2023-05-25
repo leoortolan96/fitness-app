@@ -30,7 +30,9 @@ function ProfilePage() {
       <ConfirmDialog
         show={isLogoutDialogOpen}
         onClose={() => setIsLogoutDialogOpen(false)}
-        onConfirm={() => authCtx.logout()}
+        onConfirm={() =>
+          authCtx.logout({ returnTo: process.env.REACT_APP_HOME_URL })
+        }
         title="FAZER LOGOUT"
         text="Tem certeza que deseja sair da sua conta?"
         isCritical={true}

@@ -1,10 +1,11 @@
-import { createContext } from "react";
+import { createContext, useEffect, useRef } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const AuthContext = createContext({
   isAuthenticated: {},
   isLoading: {},
   user: {},
+  userRef: {},
   loginWithRedirect: () => {},
   logout: () => {},
 });
@@ -13,10 +14,24 @@ export function AuthContextProvider(props) {
   const { loginWithRedirect, logout, isLoading, isAuthenticated, user } =
     useAuth0();
 
+  //Para usar nos hooks
+  const userRef = useRef(user);
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (!userRef.current) loginWithRedirect();
+    }, 1500);
+    // eslint-disable-next-line
+  }, [userRef.current]);
+
   const context = {
     isAuthenticated: isAuthenticated,
     isLoading: isLoading,
     user: user,
+    userRef: userRef,
     loginWithRedirect: loginWithRedirect,
     logout: logout,
   };

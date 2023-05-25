@@ -1,5 +1,4 @@
 import { Route, Routes, Navigate } from "react-router-dom";
-import AuthDialog from "./components/layout/AuthDialog";
 import Layout from "./components/layout/Layout";
 import AddEditExercisePage from "./pages/AddEditExercise";
 import AddEditWorkoutPage from "./pages/AddEditWorkout";
@@ -13,22 +12,22 @@ import WorkoutDetailsPage from "./pages/WorkoutDetailsPage";
 
 function App() {
   return (
-    <AuthDialog>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<MyWorkoutsPage />} />
-          <Route path="/workout/:id" element={<WorkoutDetailsPage />} />
-          <Route path="/live-workout" element={<LiveWorkoutPage />} />
-          <Route path="/edit-workout" element={<AddEditWorkoutPage />} />
-          <Route path="/edit-exercise" element={<AddEditExercisePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/meetups" element={<AllMeetupsPage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/new-meetup" element={<NewMeetupPage />} />
-          <Route path="/*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Layout>
-    </AuthDialog>
+    // <AuthDialog>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<MyWorkoutsPage />} />
+        <Route path="/workout/:id" element={<WorkoutDetailsPage />} />
+        <Route path="/live-workout" element={<LiveWorkoutPage />} />
+        <Route path="/edit-workout" element={<AddEditWorkoutPage />} />
+        <Route path="/edit-exercise" element={<AddEditExercisePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/meetups" element={<AllMeetupsPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="/new-meetup" element={<NewMeetupPage />} />
+        <Route path="/*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Layout>
+    // </AuthDialog>
   );
 }
 
