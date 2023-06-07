@@ -47,7 +47,7 @@ function AddEditWorkoutPage() {
           is_paused: exercise.is_paused,
         };
       });
-      let userId = authCtx.user.sub.split("|")[1];
+      let tokenClaims = await authCtx.getIdTokenClaims();
 
       let result = await fetch(
         process.env.REACT_APP_API_ENDPOINT +
@@ -57,13 +57,13 @@ function AddEditWorkoutPage() {
           body: JSON.stringify({
             id: originalWorkout?._id,
             name: enteredName.trim(),
-            user_id: userId,
             description: enteredDescription,
             is_active: enteredWorkoutIsActive,
             exercises: JSON.stringify(exercises),
           }),
           headers: {
             "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenClaims.__raw,
           },
         }
       );
@@ -93,6 +93,7 @@ function AddEditWorkoutPage() {
       event.preventDefault();
       setIsDeleteButtonLoading(true);
       // await new Promise((resolve) => setTimeout(resolve, 2000));
+      let tokenClaims = await authCtx.getIdTokenClaims();
       let result = await fetch(
         process.env.REACT_APP_API_ENDPOINT + "/delete-workout",
         {
@@ -102,6 +103,7 @@ function AddEditWorkoutPage() {
           }),
           headers: {
             "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenClaims.__raw,
           },
         }
       );

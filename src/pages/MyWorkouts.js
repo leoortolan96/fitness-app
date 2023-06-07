@@ -93,9 +93,15 @@ function MyWorkoutsPage() {
           setErrorMessage(null);
         } else {
           setIsLoading(true);
-          let userId = authCtx.user.sub.split("|")[1];
+          let tokenClaims = await authCtx.getIdTokenClaims();
           const response = await fetch(
-            process.env.REACT_APP_API_ENDPOINT + "/workouts/" + userId
+            process.env.REACT_APP_API_ENDPOINT + "/workouts",
+            {
+              method: "get",
+              headers: {
+                Authorization: "Bearer " + tokenClaims.__raw,
+              },
+            }
           );
           if (!response.ok) {
             throw Error("Failed to fetch resource");

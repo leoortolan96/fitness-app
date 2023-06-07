@@ -1,6 +1,8 @@
+const { Schema } = require("mongoose");
+
 module.exports = {
-  getWorkoutModel: (mongoose) => {
-    var WorkoutSchema = new mongoose.Schema(
+  getWorkoutSchema: () => {
+    var WorkoutSchema = new Schema(
       {
         name: String,
         user_id: String,
@@ -37,7 +39,7 @@ module.exports = {
       }
       // { collection: "workouts" }
     );
-    var WorkoutModel = mongoose.model("Workout", WorkoutSchema);
-    return WorkoutModel;
+    // var WorkoutModel = mongoose.model("Workout", WorkoutSchema);
+    return WorkoutSchema;
   },
 };
