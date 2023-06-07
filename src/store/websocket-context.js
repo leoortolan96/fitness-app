@@ -23,14 +23,14 @@ export function WebsocketContextProvider(props) {
     // console.log(`[${new Date()}]  executando setNewClient()`);
     let newClient = new W3cwebsocket(process.env.REACT_APP_API_WEBSOCKET);
 
-    newClient.onopen = () => {
+    newClient.onopen = async () => {
       // console.log("Websocket Client Connected!");
       setClient(newClient);
-      let userId = authCtx.user?.sub.split("|")[1];
+      let tokenClaims = await authCtx.getIdTokenClaims();
       newClient.send(
         JSON.stringify({
           type: "connect",
-          user_id: userId,
+          token: tokenClaims.__raw,
         })
       );
       newClient.send(

@@ -280,66 +280,86 @@ app.ws("/", function (ws, req) {
 
   function closeConnection() {
     if (timer) clearTimeout(timer);
-    liveWorkoutStream.close();
+    liveWorkoutStream?.close();
     ws.close();
   }
 
   ws.on("message", async function (msg) {
-    msg = JSON.parse(msg);
+    try {
+      msg = JSON.parse(msg);
 
-    if (msg.type == "connect") {
-      function sendKeepAlive() {
-        ws.send(
-          JSON.stringify({
-            type: "ka",
-          })
-        );
+      if (msg.type == "connect") {
+        function sendKeepAlive() {
+          ws.send(
+            JSON.stringify({
+              type: "ka",
+            })
+          );
+          setTimeout(() => sendKeepAlive(), 5000);
+        }
+        function validateToken() {
+          try {
+            userId = jwtDecode(msg.token).user_id;
+            if (!userId) throw "Error: unauthorized!";
+          } catch (error) {
+            ws.send(
+              JSON.stringify({
+                type: "error",
+                payload: "Unauthorized user",
+              })
+            );
+            timer = setTimeout(() => closeConnection(), 0.5 * 60000); //30s
+            throw "Error: unauthorized!";
+          }
+        }
+        validateToken();
         setTimeout(() => sendKeepAlive(), 5000);
+        timer = setTimeout(() => closeConnection(), 10 * 60000); //10min
       }
-      userId = msg.user_id;
-      setTimeout(() => sendKeepAlive(), 5000);
-      timer = setTimeout(() => closeConnection(), 10 * 60000); //10min
-    }
 
-    if (msg.type == "disconnect") {
-      closeConnection();
-    }
+      if (msg.type == "disconnect") {
+        closeConnection();
+      }
 
-    if (msg.type == "start" && msg.payload == "live_workout") {
-      // Performs a query and sends the result to the client
-      let doc = await Workout.findOne({
-        is_live: true,
-        user_id: userId,
-      }).exec();
-      ws.send(
-        JSON.stringify({
-          type: "data",
-          payload: "live_workout",
-          data: doc,
-        })
-      );
-      // Sets up the change stream
-      const pipeline = [
-        {
-          $match: {
-            "updateDescription.updatedFields.is_live": { $exists: true },
-            "fullDocument.user_id": { $eq: userId },
-          },
-        },
-      ];
-      liveWorkoutStream = Workout.watch(pipeline, {
-        fullDocument: "updateLookup",
-      });
-      liveWorkoutStream.on("change", (data) => {
-        // console.log(JSON.stringify(data));
+      if (msg.type == "start" && msg.payload == "live_workout") {
+        if (!userId) throw "Error: no user detected";
+        // Performs a query and sends the result to the client
+        let doc = await Workout.findOne({
+          is_live: true,
+          user_id: userId,
+        }).exec();
         ws.send(
           JSON.stringify({
             type: "data",
             payload: "live_workout",
-            data: data.fullDocument,
+            data: doc,
           })
         );
-      });
+        // Sets up the change stream
+        const pipeline = [
+          {
+            $match: {
+              "updateDescription.updatedFields.is_live": { $exists: true },
+              "fullDocument.user_id": { $eq: userId },
+            },
+          },
+        ];
+        liveWorkoutStream = Workout.watch(pipeline, {
+          fullDocument: "updateLookup",
+        });
+        liveWorkoutStream.on("change", (data) => {
+          // console.log(JSON.stringify(data));
+          ws.send(
+            JSON.stringify({
+              type: "data",
+              payload: "live_workout",
+              data: data.fullDocument,
+            })
+          );
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   });
 });
