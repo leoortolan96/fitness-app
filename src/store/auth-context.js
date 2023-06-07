@@ -8,11 +8,18 @@ const AuthContext = createContext({
   userRef: {},
   loginWithRedirect: () => {},
   logout: () => {},
+  getIdTokenClaims: () => {},
 });
 
 export function AuthContextProvider(props) {
-  const { loginWithRedirect, logout, isLoading, isAuthenticated, user } =
-    useAuth0();
+  const {
+    loginWithRedirect,
+    logout,
+    getIdTokenClaims,
+    isLoading,
+    isAuthenticated,
+    user,
+  } = useAuth0();
 
   //Para usar nos hooks
   const userRef = useRef(user);
@@ -34,6 +41,7 @@ export function AuthContextProvider(props) {
     userRef: userRef,
     loginWithRedirect: loginWithRedirect,
     logout: logout,
+    getIdTokenClaims: getIdTokenClaims,
   };
 
   //   //BYPASS

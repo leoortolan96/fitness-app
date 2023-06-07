@@ -41,6 +41,7 @@ export default function WorkoutDetails(props) {
       if (!authCtx.user) throw Error("Error: unauthorized!");
       // await new Promise(resolve => setTimeout(resolve, 2000));
       let userId = authCtx.user.sub.split("|")[1];
+      let tokenClaims = await authCtx.getIdTokenClaims();
       let result = await fetch(
         process.env.REACT_APP_API_ENDPOINT + "/start-cancel-workout",
         {
@@ -52,6 +53,7 @@ export default function WorkoutDetails(props) {
           }),
           headers: {
             "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenClaims.__raw,
           },
         }
       );
@@ -112,6 +114,7 @@ export default function WorkoutDetails(props) {
       let startTime = new Date(localStorage.getItem("live_workout_start"));
       let endTime = new Date();
       let durationMinutes = Math.ceil((endTime - startTime) / (1000 * 60));
+      let tokenClaims = await authCtx.getIdTokenClaims();
       let result = await fetch(
         process.env.REACT_APP_API_ENDPOINT + "/finalize-workout",
         {
@@ -124,6 +127,7 @@ export default function WorkoutDetails(props) {
           }),
           headers: {
             "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenClaims.__raw,
           },
         }
       );

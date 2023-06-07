@@ -7,6 +7,7 @@ import classes from "./WorkoutDetailsPage.module.css";
 import { FaEdit } from "react-icons/fa";
 import EditWorkoutContext from "../store/edit-workout-context";
 import LiveWorkoutContext from "../store/live-workout-context";
+import AuthContext from "../store/auth-context";
 
 // const DUMMY_DATA =
 //   {
@@ -83,13 +84,21 @@ function WorkoutDetailsPage() {
   const navigate = useNavigate();
   const editWorkoutCtx = useContext(EditWorkoutContext);
   const liveWorkoutCtx = useContext(LiveWorkoutContext);
+  const authCtx = useContext(AuthContext);
 
   useEffect(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
+        let tokenClaims = await authCtx.getIdTokenClaims();
         const response = await fetch(
-          process.env.REACT_APP_API_ENDPOINT + "/workout/" + id
+          process.env.REACT_APP_API_ENDPOINT + "/workout/" + id,
+          {
+            method: "get",
+            headers: {
+              Authorization: "Bearer " + tokenClaims.__raw,
+            },
+          }
         );
         if (!response.ok) {
           throw Error("Failed to fetch resource");
