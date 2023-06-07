@@ -47,7 +47,6 @@ function AddEditWorkoutPage() {
           is_paused: exercise.is_paused,
         };
       });
-      let userId = authCtx.user.sub.split("|")[1];
       let tokenClaims = await authCtx.getIdTokenClaims();
 
       let result = await fetch(
@@ -58,7 +57,6 @@ function AddEditWorkoutPage() {
           body: JSON.stringify({
             id: originalWorkout?._id,
             name: enteredName.trim(),
-            user_id: userId,
             description: enteredDescription,
             is_active: enteredWorkoutIsActive,
             exercises: JSON.stringify(exercises),

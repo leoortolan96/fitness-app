@@ -1,3 +1,4 @@
+const jwtDecode = require("jwt-decode");
 const mongoose = require("mongoose");
 const port = 5000;
 
@@ -35,8 +36,10 @@ app.get("/", (req, resp) => {
 // const Workout = getWorkoutModel(mongoose);
 const Workout = mongoose.model("Workout", getWorkoutSchema());
 
-async function getClientAndModel(req) {
+async function setupClient(req) {
   let token = req.headers.authorization.split(" ")[1];
+  let userId = jwtDecode(token).user_id;
+  if (!userId) throw "Error: unauthorized!";
   let connection = await mongoose.createConnection(
     // "mongodb+srv://leonardoortolan96:pIGAUpg85wcsPWvf@mongofitnessapp.73xpn5j.mongodb.net/?retryWrites=true&w=majority",
     `mongodb://_:${token}@us-east-1.aws.realm.mongodb.com:27020/?authMechanism=PLAIN&authSource=%24external&ssl=true&appName=fitness-app-odbao:Fitness-App-Service:custom-token`,
@@ -47,15 +50,15 @@ async function getClientAndModel(req) {
     }
   );
   let Workout = connection.model("Workout", getWorkoutSchema());
-  return { connection, Workout };
+  return { connection, Workout, userId };
 }
 
-app.get("/workouts/:userId", async (req, resp) => {
+app.get("/workouts", async (req, resp) => {
   let conn;
   try {
-    let { connection, Workout } = await getClientAndModel(req);
+    let { connection, Workout, userId } = await setupClient(req);
     conn = connection;
-    var docs = await Workout.find({ user_id: req.params.userId });
+    var docs = await Workout.find({ user_id: userId });
     // console.log("docs:\n" + docs);
     resp.json({ workouts: docs });
   } catch (e) {
@@ -68,7 +71,7 @@ app.get("/workouts/:userId", async (req, resp) => {
 app.get("/workout/:id", async (req, resp) => {
   let conn;
   try {
-    let { connection, Workout } = await getClientAndModel(req);
+    let { connection, Workout } = await setupClient(req);
     conn = connection;
     var docs = await Workout.find({ _id: req.params.id }).exec();
     // console.log("doc:\n" + doc);
@@ -93,7 +96,7 @@ app.get("/workout/:id", async (req, resp) => {
 app.post("/start-cancel-workout", async (req, resp) => {
   let conn;
   try {
-    let { connection, Workout } = await getClientAndModel(req);
+    let { connection, Workout, userId } = await setupClient(req);
     conn = connection;
     if (req.body.is_live) {
       let liveCountQueryResult = await Workout.aggregate([
@@ -103,7 +106,7 @@ app.post("/start-cancel-workout", async (req, resp) => {
               $eq: true,
             },
             user_id: {
-              $eq: req.body.user_id,
+              $eq: userId,
             },
           },
         },
@@ -138,7 +141,7 @@ app.post("/start-cancel-workout", async (req, resp) => {
 app.post("/finalize-workout", async (req, resp) => {
   let conn;
   try {
-    let { connection, Workout } = await getClientAndModel(req);
+    let { connection, Workout } = await setupClient(req);
     conn = connection;
     let workout = (await Workout.find({ _id: req.body.id }))[0];
     workout.is_live = false;
@@ -172,13 +175,13 @@ app.post("/finalize-workout", async (req, resp) => {
 app.post("/add-workout", async (req, resp) => {
   let conn;
   try {
-    let { connection, Workout } = await getClientAndModel(req);
+    let { connection, Workout, userId } = await setupClient(req);
     conn = connection;
     if (req.body.name == null || req.body.is_active == null)
       throw Error("Error: Unexpected null value");
     var workout = new Workout({
       name: req.body.name,
-      user_id: req.body.user_id,
+      user_id: userId,
       description: req.body.description,
       is_active: req.body.is_active,
       exercises: JSON.parse(req.body.exercises),
@@ -195,7 +198,7 @@ app.post("/add-workout", async (req, resp) => {
 app.post("/edit-workout", async (req, resp) => {
   let conn;
   try {
-    let { connection, Workout } = await getClientAndModel(req);
+    let { connection, Workout } = await setupClient(req);
     conn = connection;
     if (req.body.name == null || req.body.is_active == null)
       throw Error("Error: Unexpected null value");
@@ -247,7 +250,7 @@ app.post("/edit-workout", async (req, resp) => {
 app.post("/delete-workout", async (req, resp) => {
   let conn;
   try {
-    let { connection, Workout } = await getClientAndModel(req);
+    let { connection, Workout } = await setupClient(req);
     conn = connection;
     if (req.body.id == null) throw Error("Error: Unexpected null value");
     await Workout.deleteOne({ _id: req.body.id });

@@ -40,7 +40,6 @@ export default function WorkoutDetails(props) {
       else setIsCancelButtonLoading(true);
       if (!authCtx.user) throw Error("Error: unauthorized!");
       // await new Promise(resolve => setTimeout(resolve, 2000));
-      let userId = authCtx.user.sub.split("|")[1];
       let tokenClaims = await authCtx.getIdTokenClaims();
       let result = await fetch(
         process.env.REACT_APP_API_ENDPOINT + "/start-cancel-workout",
@@ -49,7 +48,6 @@ export default function WorkoutDetails(props) {
           body: JSON.stringify({
             id: props.workout._id,
             is_live: isStarting,
-            user_id: userId,
           }),
           headers: {
             "Content-Type": "application/json",
